@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ThirdParty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PwagProj\src;$(SolutionDir)ThirdParty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ThirdParty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PwagProj\src;$(SolutionDir)ThirdParty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ThirdParty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PwagProj\src;$(SolutionDir)ThirdParty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ThirdParty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PwagProj\src;$(SolutionDir)ThirdParty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,7 +151,52 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\Rendering\Renderer.cpp" />
+    <ClCompile Include="src\Engine\Rendering\Material.cpp" />
+    <ClCompile Include="src\Engine\Tools\ImageTools.cpp" />
+    <ClCompile Include="src\Engine\Rendering\Mesh.cpp" />
+    <ClCompile Include="src\Engine\Assets\AssetManager.cpp" />
+    <ClCompile Include="src\Engine\Rendering\Camera.cpp" />
+    <ClCompile Include="src\Engine\Rendering\OpenGL\IndexBuffer.cpp" />
+    <ClCompile Include="src\Application\Scenes\MainScene.cpp" />
+    <ClCompile Include="src\Engine\Rendering\OpenGL\Shader.cpp" />
+    <ClCompile Include="src\Engine\Rendering\OpenGL\ShaderCompiler.cpp" />
+    <ClCompile Include="src\Engine\Rendering\OpenGL\VertexAttrib.cpp" />
+    <ClCompile Include="src\Engine\Scenes\Scene.cpp" />
+    <ClCompile Include="src\Application\Application.cpp" />
+    <ClCompile Include="src\Engine\AppBase.cpp" />
+    <ClCompile Include="src\Engine\Tools\FileTools.cpp" />
+    <ClCompile Include="src\Engine\Tools\MeshTools.cpp" />
+    <ClCompile Include="src\Engine\Tools\StbImpl.cpp" />
+    <ClCompile Include="src\Engine\Tools\StringTools.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Engine\Window\Window.cpp" />
+    <ClCompile Include="src\Engine\Rendering\OpenGL\VertexBuffer.cpp" />
+    <ClCompile Include="src\Engine\Rendering\OpenGL\VertexArray.cpp" />
+    <ClCompile Include="src\Engine\Rendering\OpenGL\Texture.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Engine\Rendering\Renderer.h" />
+    <ClInclude Include="src\Engine\Rendering\Material.h" />
+    <ClInclude Include="src\Engine\Tools\ImageTools.h" />
+    <ClInclude Include="src\Engine\Rendering\Mesh.h" />
+    <ClInclude Include="src\Engine\Assets\AssetManager.h" />
+    <ClInclude Include="src\Engine\Rendering\Camera.h" />
+    <ClInclude Include="src\Engine\Rendering\OpenGL\IndexBuffer.h" />
+    <ClInclude Include="src\Application\Scenes\MainScene.h" />
+    <ClInclude Include="src\Engine\Rendering\OpenGL\Shader.h" />
+    <ClInclude Include="src\Engine\Rendering\OpenGL\ShaderCompiler.h" />
+    <ClInclude Include="src\Engine\Rendering\OpenGL\VertexAttrib.h" />
+    <ClInclude Include="src\Engine\Scenes\Scene.h" />
+    <ClInclude Include="src\Application\Application.h" />
+    <ClInclude Include="src\Engine\AppBase.h" />
+    <ClInclude Include="src\Engine\Tools\FileTools.h" />
+    <ClInclude Include="src\Engine\Tools\MeshTools.h" />
+    <ClInclude Include="src\Engine\Tools\StringTools.h" />
+    <ClInclude Include="src\Engine\Window\Window.h" />
+    <ClInclude Include="src\Engine\Rendering\OpenGL\VertexBuffer.h" />
+    <ClInclude Include="src\Engine\Rendering\OpenGL\VertexArray.h" />
+    <ClInclude Include="src\Engine\Rendering\OpenGL\Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
