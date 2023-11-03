@@ -12,6 +12,7 @@ class MainScene : public engine::Scene
 public:
 	virtual void OnStart() override;
 	virtual void OnUpdate(float deltaTime) override;
+	virtual void OnUIUpdate() override;
 
 private:
 	engine::Material m_material;

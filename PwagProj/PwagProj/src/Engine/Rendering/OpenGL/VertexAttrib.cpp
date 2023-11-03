@@ -28,7 +28,7 @@ namespace engine
 		for (size_t i = 0; i < m_layout.size(); i++)
 		{
 			glVertexAttribPointer((GLuint)i, m_layout[i], GL_FLOAT, GL_FALSE, m_stride, (void*)currentOffset);
-			glEnableVertexAttribArray(i);
+			glEnableVertexAttribArray((GLuint)i);
 			currentOffset += (size_t)m_layout[i] * sizeof(GLfloat);
 		}
 	}

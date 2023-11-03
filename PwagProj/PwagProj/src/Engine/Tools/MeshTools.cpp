@@ -56,7 +56,7 @@ namespace engine
 		std::vector<Vec3f> normals;
 
 		std::string line;
-		size_t currentIndex = 0;
+		uint32_t currentIndex = 0;
 
 		std::unordered_map<std::string, uint32_t> faceIndices;
 
