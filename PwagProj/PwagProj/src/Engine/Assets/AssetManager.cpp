@@ -13,12 +13,12 @@ namespace engine
 			mesh.second.Destroy();
 	}
 
-	Material AssetManager::CreateMaterial(const std::string& shaderName, const std::string& materialName)
+	Material& AssetManager::CreateMaterial(const std::string& shaderName, const std::string& materialName)
 	{
 		Shader shader = m_shaders.at(shaderName);
 		Material material(shader);
 		m_materials[materialName] = material;
-		return material;
+		return m_materials[materialName];
 	}
 
 	Texture AssetManager::LoadTextureFromFile(const std::string& filePath, const std::string& textureName)

@@ -9,15 +9,22 @@ namespace engine
 		s_camera = camera;
 	}
 
-	void Renderer::Draw(Mesh mesh, Material material)
+	void Renderer::Draw(const Entity& entity)
 	{
-		mesh.Bind();
+		entity.Bind();
 
-		material.Bind();
+		Material material = entity.GetMaterial();
 		material.SetProjectionMatrix(s_camera->GetProjectionMatrix());
 		material.SetViewMatrix(s_camera->GetViewMatrix());
+		material.SetModelMatrix(entity.GetTransformMatrix());
 
+		Mesh mesh = entity.GetMesh();
 		glDrawElements(GL_TRIANGLES, mesh.GetIndicesCount(), GL_UNSIGNED_INT, 0);
+	}
+
+	void Renderer::Draw(const std::unique_ptr<Entity>& entity)
+	{
+		Draw(*entity);
 	}
 
 	void Renderer::End()

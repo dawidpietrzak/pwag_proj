@@ -11,8 +11,8 @@ namespace engine
 		void Create(const Image& image);
 		void Destroy();
 
-		void Bind();
-		void Unbind();
+		void Bind() const;
+		void Unbind() const;
 
 		bool IsCreated() const { return m_id != 0; }
 

@@ -13,8 +13,8 @@ namespace engine
 		void Create(const std::vector<GLfloat>& vertices);
 		void Destroy();
 
-		void Bind();
-		void Unbind();
+		void Bind() const;
+		void Unbind() const;
 
 	private:
 		GLuint m_id = 0;

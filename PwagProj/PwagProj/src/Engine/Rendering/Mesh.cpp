@@ -9,14 +9,14 @@ namespace engine
 		m_indexBuffer = indexBuffer;
 	}
 
-	void Mesh::Bind()
+	void Mesh::Bind() const
 	{
 		m_vertexBuffer.Bind();
 		m_vertexAttrib.Bind();
 		m_indexBuffer.Bind();
 	}
 
-	void Mesh::Unbind()
+	void Mesh::Unbind() const
 	{
 		m_vertexBuffer.Unbind();
 		m_vertexAttrib.Unbind();

@@ -2,7 +2,7 @@
 
 namespace engine
 {
-	void Material::Bind()
+	void Material::Bind() const
 	{
 		m_shader.Bind();
 		if (m_texture.IsCreated())
@@ -13,7 +13,7 @@ namespace engine
 		}
 	}
 
-	void Material::Unbind()
+	void Material::Unbind() const
 	{
 		m_shader.Unbind();
 	}
@@ -26,5 +26,10 @@ namespace engine
 	void Material::SetViewMatrix(const glm::mat4& viewMatrix)
 	{
 		m_shader.SetMat4f("uViewMatrix", viewMatrix);
+	}
+
+	void Material::SetModelMatrix(const glm::mat4& modelMatrix)
+	{
+		m_shader.SetMat4f("uModelMatrix", modelMatrix);
 	}
 }

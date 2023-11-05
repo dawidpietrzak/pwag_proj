@@ -13,8 +13,8 @@ namespace engine
 		void Create(const std::vector<GLuint>& indices);
 		void Destroy();
 
-		void Bind();
-		void Unbind();
+		void Bind() const;
+		void Unbind() const;
 
 		GLuint GetIndicesCount() const { return m_indicesCount; }
 

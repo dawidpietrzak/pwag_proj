@@ -15,7 +15,7 @@ namespace engine
 		AssetManager(const std::unordered_map<std::string, Shader>& shaders) : m_shaders(shaders) {}
 		void Destroy();
 
-		Material CreateMaterial(const std::string& shaderName, const std::string& materialName);
+		Material& CreateMaterial(const std::string& shaderName, const std::string& materialName);
 		Material GetMaterial(const std::string& materialName) const { return m_materials.at(materialName); }
 
 		Texture LoadTextureFromFile(const std::string& filePath, const std::string& textureName);

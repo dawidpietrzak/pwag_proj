@@ -16,11 +16,11 @@ namespace engine
 
 		void Destroy() { glDeleteProgram(m_id); m_id = 0; }
 
-		void Bind();
-		void Unbind();
+		void Bind() const;
+		void Unbind() const;
 
-		void SetInt(const std::string& uniformName, int value);
-		void SetMat4f(const std::string& uniformName, const glm::mat4& matrix);
+		void SetInt(const std::string& uniformName, int value) const;
+		void SetMat4f(const std::string& uniformName, const glm::mat4& matrix) const;
 
 	private:
 		GLuint m_id;

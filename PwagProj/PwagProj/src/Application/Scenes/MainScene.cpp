@@ -2,6 +2,9 @@
 
 #include <Application/Application.h>
 #include <Engine/Rendering/Renderer.h>
+#include <Engine/Rendering/Mesh.h>
+#include <Engine/Rendering/Material.h>
+
 #include <Engine/Vendor/ImGui/imgui.h>
 
 void MainScene::OnStart()
@@ -12,15 +15,14 @@ void MainScene::OnStart()
 	m_camera = app->GetCamera();
 
 	auto assetManager = app->GetAssetManager();
-	auto groundTexture = assetManager->GetTexture("ground");
-	m_terrainMaterial = assetManager->GetMaterial("terrain_mat");
-	m_terrainMaterial.SetTexture(groundTexture);
-	m_testMesh = assetManager->GetMesh("terrain");
+	auto terrainMaterial = assetManager->GetMaterial("terrain_mat");
+	auto terrainMesh = assetManager->GetMesh("terrain");
+	m_terrain = std::make_unique<engine::Entity>(terrainMesh, terrainMaterial);
 
-	auto blobTexture = assetManager->GetTexture("blob");
-	m_defaultMaterial = assetManager->GetMaterial("default_mat");
-	m_defaultMaterial.SetTexture(blobTexture);
-	m_cylinderMesh = m_cylinderGen.CreateMesh(1.0f, 1.0f);
+	auto defaultMaterial = assetManager->GetMaterial("default_mat");
+	auto cylinderMesh = m_cylinderGen.CreateMesh(1.0f, 1.0f);
+	m_cylinder = std::make_unique<engine::Entity>(cylinderMesh, defaultMaterial);
+	m_cylinder->SetPosition({ 0, 4, 0 });
 }
 
 void MainScene::OnUIUpdate()
@@ -31,8 +33,9 @@ void MainScene::OnUIUpdate()
 	ImGui::SliderFloat("Bottom Scale", &m_bottomScale, 0.1f, 1.0f);
 	if (ImGui::Button("Generuj cylinder"))
 	{
-		m_cylinderMesh.Destroy();
-		m_cylinderMesh = m_cylinderGen.CreateMesh(m_topScale, m_bottomScale);
+		auto cylinderMesh = m_cylinderGen.CreateMesh(m_topScale, m_bottomScale);
+		m_cylinder->DestroyMesh();
+		m_cylinder->SetMesh(cylinderMesh);
 	}
 	ImGui::End();
 }
@@ -40,7 +43,7 @@ void MainScene::OnUIUpdate()
 void MainScene::OnUpdate(float deltaTime)
 {
 	engine::Renderer::Begin(m_camera);
-	//engine::Renderer::Draw(m_testMesh, m_terrainMaterial);
-	engine::Renderer::Draw(m_cylinderMesh, m_defaultMaterial);
+	engine::Renderer::Draw(m_terrain);
+	engine::Renderer::Draw(m_cylinder);
 	engine::Renderer::End();
 }

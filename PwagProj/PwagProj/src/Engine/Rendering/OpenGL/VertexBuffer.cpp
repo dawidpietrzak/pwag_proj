@@ -20,12 +20,12 @@ namespace engine
 		glDeleteBuffers(1, &m_id);
 	}
 
-	void VertexBuffer::Bind()
+	void VertexBuffer::Bind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_id);
 	}
 
-	void VertexBuffer::Unbind()
+	void VertexBuffer::Unbind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}

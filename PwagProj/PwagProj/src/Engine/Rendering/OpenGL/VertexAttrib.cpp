@@ -22,7 +22,7 @@ namespace engine
 		}
 	}
 
-	void VertexAttrib::Bind()
+	void VertexAttrib::Bind() const
 	{
 		size_t currentOffset = 0;
 		for (size_t i = 0; i < m_layout.size(); i++)
@@ -33,7 +33,7 @@ namespace engine
 		}
 	}
 
-	void VertexAttrib::Unbind()
+	void VertexAttrib::Unbind() const
 	{
 		for (size_t i = 0; i < m_layout.size(); i++)
 		{

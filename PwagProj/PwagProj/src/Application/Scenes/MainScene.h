@@ -1,8 +1,7 @@
 #pragma once
 
 #include <Engine/Scenes/Scene.h>
-#include <Engine/Rendering/Mesh.h>
-#include <Engine/Rendering/Material.h>
+#include <Engine/Rendering/Entity.h>
 #include <Engine/Rendering/Camera.h>
 
 #include <Application/Tools/CylinderGenerator.h>
@@ -17,12 +16,9 @@ public:
 	virtual void OnUIUpdate() override;
 
 private:
-	engine::Material m_terrainMaterial;
-	engine::Material m_defaultMaterial;
-
-	engine::Mesh m_testMesh;
-	engine::Mesh m_cylinderMesh;
 	std::shared_ptr<engine::Camera> m_camera;
+	std::unique_ptr<engine::Entity> m_terrain;
+	std::unique_ptr<engine::Entity> m_cylinder;
 
 	CylinderGenerator m_cylinderGen;
 	float m_topScale = 1.0f, m_bottomScale = 1.0f;

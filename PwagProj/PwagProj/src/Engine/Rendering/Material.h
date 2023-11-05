@@ -12,11 +12,12 @@ namespace engine
 		Material() { }
 		Material(Shader shader) : m_shader(shader) { }
 
-		void Bind();
-		void Unbind();
+		void Bind() const;
+		void Unbind() const;
 
 		void SetProjectionMatrix(const glm::mat4& projectionMatrix);
 		void SetViewMatrix(const glm::mat4& viewMatrix);
+		void SetModelMatrix(const glm::mat4& modelMatrix);
 
 		void SetTexture(Texture texture) { m_texture = texture; }
 

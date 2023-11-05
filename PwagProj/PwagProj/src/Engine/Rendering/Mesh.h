@@ -12,8 +12,8 @@ namespace engine
 		void Create(VertexBuffer vertexBuffer, VertexAttrib vertexAttrib, IndexBuffer indexBuffer);
 		void Destroy();
 
-		void Bind();
-		void Unbind();
+		void Bind() const;
+		void Unbind() const;
 
 		GLuint GetIndicesCount() const { return m_indexBuffer.GetIndicesCount(); }
 

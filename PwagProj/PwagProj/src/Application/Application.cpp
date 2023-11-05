@@ -2,7 +2,6 @@
 
 #include <Application/Scenes/MainScene.h>
 
-
 Application* Application::s_app = nullptr;
 
 void Application::OnInitialize()
@@ -22,11 +21,14 @@ void Application::OnStart()
 
 void Application::LoadResources()
 {
-	m_assetManager->CreateMaterial("default", "terrain_mat");
-	m_assetManager->CreateMaterial("default", "default_mat");
+	engine::Texture terrainTexture = m_assetManager->LoadTextureFromFile("assets/ground.png", "ground");
+	engine::Texture blobTexture = m_assetManager->LoadTextureFromFile("assets/blob.png", "blob");
 
-	m_assetManager->LoadTextureFromFile("assets/blob.png", "blob");
-	m_assetManager->LoadTextureFromFile("assets/ground.png", "ground");
+	engine::Material& terrainMaterial = m_assetManager->CreateMaterial("default", "terrain_mat");
+	terrainMaterial.SetTexture(terrainTexture);
+
+	engine::Material& defaultMaterial = m_assetManager->CreateMaterial("default", "default_mat");
+	defaultMaterial.SetTexture(blobTexture);
 
 	// m_assetManager->LoadMeshFromFile("assets/cube.obj", "cube");
 	m_assetManager->LoadMeshFromFile("assets/terrain.obj", "terrain");

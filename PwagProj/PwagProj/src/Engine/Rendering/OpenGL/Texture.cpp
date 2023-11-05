@@ -25,16 +25,12 @@ namespace engine
 		m_id = 0;
 	}
 
-	void Texture::Bind()
+	void Texture::Bind() const
 	{
 		glBindTexture(GL_TEXTURE_2D, m_id);
-
-		// Bindowanie tekstury na slot
-		// glActiveTexture(GL_TEXTURE0 + slot);
-		// Bind();
 	}
 
-	void Texture::Unbind()
+	void Texture::Unbind() const
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
