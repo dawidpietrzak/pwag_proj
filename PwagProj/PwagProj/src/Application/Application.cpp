@@ -22,9 +22,13 @@ void Application::OnStart()
 
 void Application::LoadResources()
 {
+	m_assetManager->CreateMaterial("default", "terrain_mat");
 	m_assetManager->CreateMaterial("default", "default_mat");
+
+	m_assetManager->LoadTextureFromFile("assets/blob.png", "blob");
 	m_assetManager->LoadTextureFromFile("assets/ground.png", "ground");
-	m_assetManager->LoadMeshFromFile("assets/cube.obj", "cube");
+
+	// m_assetManager->LoadMeshFromFile("assets/cube.obj", "cube");
 	m_assetManager->LoadMeshFromFile("assets/terrain.obj", "terrain");
 
 	AddScene("main_scene", new MainScene());

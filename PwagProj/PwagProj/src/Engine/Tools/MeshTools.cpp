@@ -21,25 +21,33 @@ namespace engine
 
 	Mesh MeshTools::LoadMeshFromObjFile(const std::string& filePath)
 	{
+		std::vector<GLfloat> vertices;
+		std::vector<GLuint> indices;
+		LoadMeshDataFromObjFile(filePath, vertices, indices);
+		return CreateMeshFromRawData(vertices, indices);
+	}
+
+	void MeshTools::LoadMeshDataFromObjFile(const std::string& filePath, std::vector<GLfloat>& vertices, std::vector<GLuint>& indices)
+	{
 		std::ifstream inputFile(filePath, std::ios::in);
 		if (!inputFile.is_open())
 			throw std::exception("Could not open mesh .obj file");
 
-		std::vector<GLfloat> vertices;
-		std::vector<GLuint> indices;
 		ParseObjFile(inputFile, vertices, indices);
-
 		inputFile.close();
+	}
 
+	Mesh MeshTools::CreateMeshFromRawData(const std::vector<GLfloat>& vertices, const std::vector<GLuint>& indices)
+	{
 		VertexBuffer vertexBuffer;
 		vertexBuffer.Create(vertices);
 
 		VertexAttrib vertexAttrib;
 		vertexAttrib.Create({
-			3, // Position 3D
-			2, // TexCoords 2D
-			3, // Normal 3D
-		});
+			3,	// Position 3D
+			2,	// TexCoords 2D
+			3,	// Normal 3D
+			});
 
 		IndexBuffer indexBuffer;
 		indexBuffer.Create(indices);
