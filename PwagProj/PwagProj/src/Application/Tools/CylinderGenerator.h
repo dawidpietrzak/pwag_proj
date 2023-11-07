@@ -9,7 +9,7 @@ class CylinderGenerator
 {
 public:
 	void LoadBaseMeshData(const std::string& filePath);
-	engine::Mesh CreateMesh(float topScale, float bottomScale);
+	engine::Mesh CreateMesh(float lengthScale, float topScale, float bottomScale);
 
 private:
 	std::vector<GLfloat> m_vertices;

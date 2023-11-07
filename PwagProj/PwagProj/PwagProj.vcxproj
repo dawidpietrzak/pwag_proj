@@ -151,6 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Application\LSystem\Grammar\LSystemGrammar.cpp" />
+    <ClCompile Include="src\Application\LSystem\Plant.cpp" />
+    <ClCompile Include="src\Application\LSystem\PlantFactory.cpp" />
     <ClCompile Include="src\Engine\Rendering\Entity.cpp" />
     <ClCompile Include="src\Application\Tools\CylinderGenerator.cpp" />
     <ClCompile Include="src\Engine\Rendering\Renderer.cpp" />
@@ -176,6 +179,7 @@
     <ClCompile Include="src\Engine\Vendor\ImGui\imgui_draw.cpp" />
     <ClCompile Include="src\Engine\Vendor\ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\Engine\Vendor\ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\Engine\Vendor\ImGui\imgui_stdlib.cpp" />
     <ClCompile Include="src\Engine\Vendor\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\Engine\Vendor\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -185,6 +189,9 @@
     <ClCompile Include="src\Engine\Rendering\OpenGL\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Application\LSystem\Grammar\LSystemGrammar.h" />
+    <ClInclude Include="src\Application\LSystem\Plant.h" />
+    <ClInclude Include="src\Application\LSystem\PlantFactory.h" />
     <ClInclude Include="src\Engine\Rendering\Entity.h" />
     <ClInclude Include="src\Application\Tools\CylinderGenerator.h" />
     <ClInclude Include="src\Engine\Rendering\Renderer.h" />
@@ -210,6 +217,7 @@
     <ClInclude Include="src\Engine\Vendor\ImGui\imgui_impl_opengl3.h" />
     <ClInclude Include="src\Engine\Vendor\ImGui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="src\Engine\Vendor\ImGui\imgui_internal.h" />
+    <ClInclude Include="src\Engine\Vendor\ImGui\imgui_stdlib.h" />
     <ClInclude Include="src\Engine\Vendor\ImGui\imstb_rectpack.h" />
     <ClInclude Include="src\Engine\Vendor\ImGui\imstb_textedit.h" />
     <ClInclude Include="src\Engine\Vendor\ImGui\imstb_truetype.h" />

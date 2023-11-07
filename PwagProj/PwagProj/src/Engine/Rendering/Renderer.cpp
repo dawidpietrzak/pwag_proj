@@ -27,6 +27,11 @@ namespace engine
 		Draw(*entity);
 	}
 
+	void Renderer::Draw(const std::shared_ptr<Entity>& entity)
+	{
+		Draw(*entity);
+	}
+
 	void Renderer::End()
 	{
 

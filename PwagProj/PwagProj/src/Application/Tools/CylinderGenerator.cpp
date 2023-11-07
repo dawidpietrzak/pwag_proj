@@ -7,7 +7,7 @@ void CylinderGenerator::LoadBaseMeshData(const std::string& filePath)
 	engine::MeshTools::LoadMeshDataFromObjFile(filePath, m_vertices, m_indices);
 }
 
-engine::Mesh CylinderGenerator::CreateMesh(float topScale, float bottomScale)
+engine::Mesh CylinderGenerator::CreateMesh(float topScale, float bottomScale, float lengthScale = 1)
 {
 	std::vector<GLfloat> vertices = m_vertices;
 
@@ -24,6 +24,9 @@ engine::Mesh CylinderGenerator::CreateMesh(float topScale, float bottomScale)
 			vertices[i] *= bottomScale;
 			vertices[i + 2] *= bottomScale;
 		}
+
+        // Scale the y position to add length to the cylinder
+        vertices[i + 1] *= lengthScale;
 		i += 8;
 	}
     
