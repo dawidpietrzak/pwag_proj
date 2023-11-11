@@ -30,7 +30,9 @@ void Application::LoadResources()
 	engine::Material& defaultMaterial = m_assetManager->CreateMaterial("default", "default_mat");
 	defaultMaterial.SetTexture(blobTexture);
 
-	// m_assetManager->LoadMeshFromFile("assets/cube.obj", "cube");
+	engine::Material& plantMaterial = m_assetManager->CreateMaterial("plant", "plant_mat");
+	plantMaterial.SetTexture(blobTexture);
+
 	m_assetManager->LoadMeshFromFile("assets/terrain.obj", "terrain");
 
 	AddScene("main_scene", new MainScene());

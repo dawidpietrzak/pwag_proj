@@ -1,12 +1,14 @@
 #include "MainScene.h"
 
 #include <Application/Application.h>
+#include <Application/LSystem/PlantFactory.h>
+
 #include <Engine/Rendering/Renderer.h>
 #include <Engine/Rendering/Mesh.h>
 #include <Engine/Rendering/Material.h>
 
 #include <Engine/Vendor/ImGui/imgui.h>
-#include "Engine/Vendor/ImGui/imgui_stdlib.h" // Make sure this path is correct
+#include <Engine/Vendor/ImGui/imgui_stdlib.h>
 #include <iostream>
 
 #include <vector>
@@ -24,7 +26,7 @@ std::vector<Rule> rules;
 
 void MainScene::OnStart()
 {
-	m_cylinderGen.LoadBaseMeshData("assets/cylinder.obj");
+	m_plantInstancedMeshGen.LoadBaseMeshData("assets/cylinderTransformBottom.obj");
 
 	auto app = Application::Get();
 	m_camera = app->GetCamera();
@@ -34,14 +36,8 @@ void MainScene::OnStart()
 	auto terrainMesh = assetManager->GetMesh("terrain");
 	m_terrain = std::make_unique<engine::Entity>(terrainMesh, terrainMaterial);
 
-	auto defaultMaterial = assetManager->GetMaterial("default_mat");
-	auto cylinderMesh = m_cylinderGen.CreateMesh(1.0f, 1.0f, 1.0f);
-	m_cylinder = std::make_unique<engine::Entity>(cylinderMesh, defaultMaterial);
-	m_cylinder->SetPosition({0, 4, 0});
-
-	m_plantFactory = engine::PlantFactory();
-	m_plantFactory.setMaterial("default_mat");
-
+	m_defaultMaterial = assetManager->GetMaterial("plant_mat");
+	
 	rules.push_back(Rule{ "F", "FF-[&F^F^F]+[^F*&F&F*]<[^f*^f*&f*]" });
 }
 
@@ -73,7 +69,7 @@ void MainScene::OnLSystemUIUpdate()
 	// Iterate over all rules and create an input text field for each
 
 	for (size_t i = 0; i < rules.size(); ++i) {
-		ImGui::PushID(i);
+		ImGui::PushID((int)i);
 		ImGui::SetNextItemWidth(50);
 		if (ImGui::InputText("##Symbol", &rules[i].symbol)) {
 			rules[i].symbol = rules[i].symbol.empty() ? '\0' : rules[i].symbol.front();
@@ -101,36 +97,45 @@ void MainScene::OnLSystemUIUpdate()
 		rules.push_back(Rule{ "\0", "" });
 	}
 
-	static std::string lsystem_output;
-	// Button to generate the L-System
-	if (ImGui::Button("Generate")) {
-		m_plantFactory.ClearPlants();
-		auto grammar = std::make_shared<SimpleLSystemGrammar>(initialAxiom);
-		m_plantFactory.setGrammar(grammar);
-
-		for (const auto& rule : rules) {
-			grammar->addRule(rule.symbol.c_str()[0], rule.replacement);
+	static std::string lSystemOutput;
+	if (ImGui::Button("Generate"))
+	{
+		if (m_plantEntity.IsCreated())
+		{
+			m_plantEntity.DestroyMesh();
 		}
 
-		grammar->generate(generations);
-		lsystem_output = grammar->getCurrentString();
-		std::cout << grammar->getCurrentString();
+		m_lSystemGrammar = std::make_unique<SimpleLSystemGrammar>();
+		m_lSystemGrammar->setCurrentString(initialAxiom);
+		for (const auto& rule : rules)
+			m_lSystemGrammar->addRule(rule.symbol.c_str()[0], rule.replacement);
 
-		m_plantFactory.createPlant();
+		m_lSystemGrammar->generate(generations);
+		lSystemOutput = m_lSystemGrammar->getCurrentString();
+		auto plantSegments = PlantFactory::CreatePlant(lSystemOutput);
+		auto plantMesh = m_plantInstancedMeshGen.GenerateMesh(plantSegments);
+		m_plantEntity.Create(plantMesh, m_defaultMaterial);
+		
 	}
-
-	// Output
 
 	// Provide a button to copy the text to the clipboard
 	if (ImGui::Button("Copy output to clipboard")) {
-		ImGui::SetClipboardText(lsystem_output.c_str());
+		ImGui::SetClipboardText(lSystemOutput.c_str());
 	}
 	
 	if (ImGui::CollapsingHeader("L-System Output", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		// Wrap the text to the width of the child window
 		ImGui::PushTextWrapPos();
-		ImGui::TextUnformatted(lsystem_output.c_str());
+		if (lSystemOutput.size() < 1000)
+		{
+			ImGui::TextUnformatted(lSystemOutput.c_str());
+		}
+		else
+		{
+			ImGui::TextUnformatted("Output too long");
+		}
+		
 		ImGui::PopTextWrapPos();
 	}
 	
@@ -140,9 +145,8 @@ void MainScene::OnLSystemUIUpdate()
 void MainScene::OnUpdate(float deltaTime)
 {
 	engine::Renderer::Begin(m_camera);
-	engine::Renderer::Draw(m_terrain);
-	//engine::Renderer::Draw(m_cylinder);
-
-	m_plantFactory.Draw();
+	//engine::Renderer::Draw(m_terrain);
+	if (m_plantEntity.IsCreated())
+		engine::Renderer::Draw(m_plantEntity);
 	engine::Renderer::End();
 }

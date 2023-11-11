@@ -1,37 +1,22 @@
 #pragma once
 
-#include "Plant.h"
-#include "Grammar/LSystemGrammar.h"
-#include "Engine/Assets/AssetManager.h"
+#include <Application/LSystem/Grammar/LSystemGrammar.h>
+#include <GLM/glm.hpp>
 #include <memory>
 #include <vector>
 
-namespace engine {
 
-class PlantFactory {
-private:
-    std::shared_ptr<ILSystemGrammar> m_grammar; // The L-system used for plant generation
-    Mesh m_baseMesh; // The base mesh to be used for all plants
-    std::string m_materialID; // The material to be used for all plants
-    std::vector<std::shared_ptr<Plant>> m_plants; // Stores all the plants created by the factory
-
-
-public:
-    PlantFactory();
-    PlantFactory(std::shared_ptr<ILSystemGrammar> lSystem);
-    
-    void setMaterial(const std::string& materialId);
-
-    void setGrammar(std::shared_ptr<ILSystemGrammar> lSystemGrammar);
-
-    // Function to create a plant
-    std::shared_ptr<Plant> createPlant();
-    
-    // Function to create multiple plants
-    std::vector<std::shared_ptr<Plant>> createPlants(size_t count);
-    void ClearPlants();
-    void Draw();
+struct PlantSegment
+{
+    glm::mat4 Transform = glm::mat4(1.0f);
+    float TopScale = 1.0f;
+    float BottomScale = 1.0f;
+    float Length = 1.0f;
 };
 
-} // namespace engine
+class PlantFactory
+{
+public:
+    static std::vector<PlantSegment> CreatePlant(const std::string& grammarString);
+};
 

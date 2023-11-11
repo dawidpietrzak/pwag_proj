@@ -105,9 +105,6 @@
     <ClCompile Include="src\Engine\Vendor\ImGui\imgui_widgets.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application\Tools\CylinderGenerator.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Rendering\Entity.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
@@ -117,10 +114,10 @@
     <ClCompile Include="src\Application\LSystem\Grammar\LSystemGrammar.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application\LSystem\Plant.cpp">
+    <ClCompile Include="src\Engine\Vendor\ImGui\imgui_stdlib.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Vendor\ImGui\imgui_stdlib.cpp">
+    <ClCompile Include="src\Application\Tools\PlantInstancedMeshGen.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
@@ -215,9 +212,6 @@
     <ClInclude Include="src\Engine\Vendor\ImGui\imstb_truetype.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\Application\Tools\CylinderGenerator.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Rendering\Entity.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -227,10 +221,10 @@
     <ClInclude Include="src\Application\LSystem\Grammar\LSystemGrammar.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\Application\LSystem\Plant.h">
+    <ClInclude Include="src\Engine\Vendor\ImGui\imgui_stdlib.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Vendor\ImGui\imgui_stdlib.h">
+    <ClInclude Include="src\Application\Tools\PlantInstancedMeshGen.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

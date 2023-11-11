@@ -39,21 +39,21 @@ namespace engine
 
 	Mesh MeshTools::CreateMeshFromRawData(const std::vector<GLfloat>& vertices, const std::vector<GLuint>& indices)
 	{
-		VertexBuffer vertexBuffer;
-		vertexBuffer.Create(vertices);
-
 		VertexAttrib vertexAttrib;
 		vertexAttrib.Create({
-			3,	// Position 3D
-			2,	// TexCoords 2D
-			3,	// Normal 3D
-			});
+			{ 0, 3 }, 	// Position 3D
+			{ 1, 2 },	// TexCoords 2D
+			{ 2, 3 },	// Normal 3D
+		});
+
+		VertexBuffer vertexBuffer;
+		vertexBuffer.Create(vertices, vertexAttrib);
 
 		IndexBuffer indexBuffer;
 		indexBuffer.Create(indices);
 
 		Mesh mesh;
-		mesh.Create(vertexBuffer, vertexAttrib, indexBuffer);
+		mesh.Create(vertexBuffer, indexBuffer);
 		return mesh;
 	}
 

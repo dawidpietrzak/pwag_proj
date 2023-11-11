@@ -152,10 +152,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Application\LSystem\Grammar\LSystemGrammar.cpp" />
-    <ClCompile Include="src\Application\LSystem\Plant.cpp" />
     <ClCompile Include="src\Application\LSystem\PlantFactory.cpp" />
+    <ClCompile Include="src\Application\Tools\PlantInstancedMeshGen.cpp" />
     <ClCompile Include="src\Engine\Rendering\Entity.cpp" />
-    <ClCompile Include="src\Application\Tools\CylinderGenerator.cpp" />
     <ClCompile Include="src\Engine\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Engine\Rendering\Material.cpp" />
     <ClCompile Include="src\Engine\Tools\ImageTools.cpp" />
@@ -190,10 +189,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application\LSystem\Grammar\LSystemGrammar.h" />
-    <ClInclude Include="src\Application\LSystem\Plant.h" />
     <ClInclude Include="src\Application\LSystem\PlantFactory.h" />
+    <ClInclude Include="src\Application\Tools\PlantInstancedMeshGen.h" />
     <ClInclude Include="src\Engine\Rendering\Entity.h" />
-    <ClInclude Include="src\Application\Tools\CylinderGenerator.h" />
     <ClInclude Include="src\Engine\Rendering\Renderer.h" />
     <ClInclude Include="src\Engine\Rendering\Material.h" />
     <ClInclude Include="src\Engine\Tools\ImageTools.h" />

@@ -1,14 +1,18 @@
 // SimpleLSystemGrammar.cpp
 #include "LSystemGrammar.h"
 
-SimpleLSystemGrammar::SimpleLSystemGrammar(const std::string& axiom)
-    : axiom(axiom), currentString(axiom) {}
+SimpleLSystemGrammar::SimpleLSystemGrammar()
+{
 
-void SimpleLSystemGrammar::addRule(char predecessor, const std::string& successor) {
+}
+
+void SimpleLSystemGrammar::addRule(char predecessor, const std::string& successor)
+{
     rules[predecessor].push_back(successor);
 }
 
-void SimpleLSystemGrammar::generate(int iterations) {
+void SimpleLSystemGrammar::generate(int iterations)
+{
     for (int i = 0; i < iterations; ++i) {
         std::string nextString;
         for (char c : currentString) {
@@ -26,6 +30,7 @@ void SimpleLSystemGrammar::generate(int iterations) {
     }
 }
 
-std::string SimpleLSystemGrammar::getCurrentString() const {
+std::string SimpleLSystemGrammar::getCurrentString() const
+{
     return currentString;
 }

@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 #include <vector>
 
+#include <Engine/Rendering/OpenGL/VertexAttrib.h>
+
 namespace engine
 {
 	class VertexBuffer
@@ -10,7 +12,7 @@ namespace engine
 	public:
 		VertexBuffer();
 
-		void Create(const std::vector<GLfloat>& vertices);
+		void Create(const std::vector<GLfloat>& vertices, const VertexAttrib& vertexAttrib);
 		void Destroy();
 
 		void Bind() const;
@@ -18,6 +20,7 @@ namespace engine
 
 	private:
 		GLuint m_id = 0;
+		VertexAttrib m_attrib;
 	};
 }
 

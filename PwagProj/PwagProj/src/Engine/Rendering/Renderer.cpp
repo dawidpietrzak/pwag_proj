@@ -19,7 +19,15 @@ namespace engine
 		material.SetModelMatrix(entity.GetTransformMatrix());
 
 		Mesh mesh = entity.GetMesh();
-		glDrawElements(GL_TRIANGLES, mesh.GetIndicesCount(), GL_UNSIGNED_INT, 0);
+		GLuint instanceCount = mesh.GetInstanceCount();
+		if (instanceCount > 1)
+		{
+			glDrawElementsInstanced(GL_TRIANGLES, mesh.GetIndicesCount(), GL_UNSIGNED_INT, 0, (GLsizei)instanceCount);
+		}
+		else
+		{
+			glDrawElements(GL_TRIANGLES, mesh.GetIndicesCount(), GL_UNSIGNED_INT, 0);
+		}
 	}
 
 	void Renderer::Draw(const std::unique_ptr<Entity>& entity)

@@ -16,20 +16,24 @@ public:
     // Pure virtual function for getting the current L-System string
     virtual std::string getCurrentString() const = 0;
 
+    virtual void setCurrentString(const std::string& str) = 0;
+
     // Virtual destructor to ensure proper cleanup of derived classes
     virtual ~ILSystemGrammar() {}
 };
 
 
-class SimpleLSystemGrammar : public ILSystemGrammar {
-private:
-    std::string axiom;
-    std::string currentString;
-    std::map<char, std::vector<std::string>> rules;
-
+class SimpleLSystemGrammar : public ILSystemGrammar
+{
 public:
-    SimpleLSystemGrammar(const std::string& axiom);
+    SimpleLSystemGrammar();
     void addRule(char predecessor, const std::string& successor) override;
     void generate(int iterations) override;
+
     std::string getCurrentString() const override;
+    void setCurrentString(const std::string& str) override { currentString = str; }
+
+private:
+    std::string currentString;
+    std::map<char, std::vector<std::string>> rules;
 };

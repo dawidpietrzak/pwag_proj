@@ -4,8 +4,8 @@
 #include <Engine/Rendering/Entity.h>
 #include <Engine/Rendering/Camera.h>
 
-#include <Application/Tools/CylinderGenerator.h>
 #include <Application/LSystem/PlantFactory.h>
+#include <Application/Tools/PlantInstancedMeshGen.h>
 
 #include <memory>
 
@@ -22,9 +22,9 @@ private:
 	std::unique_ptr<engine::Entity> m_terrain;
 	std::unique_ptr<engine::Entity> m_cylinder;
 
-	CylinderGenerator m_cylinderGen;
-	float m_topScale = 1.0f, m_bottomScale = 1.0f;
+	engine::Material m_defaultMaterial;
+	engine::Entity m_plantEntity;
+	PlantInstancedMeshGen m_plantInstancedMeshGen;
 
-	engine::PlantFactory m_plantFactory;
-	std::shared_ptr<ILSystemGrammar> m_lSystemGrammar;
+	std::unique_ptr<ILSystemGrammar> m_lSystemGrammar;
 };

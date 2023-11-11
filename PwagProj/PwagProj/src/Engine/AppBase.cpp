@@ -50,6 +50,7 @@ namespace engine
 	void AppBase::LoadInternalResources()
 	{
 		m_shaders["default"] = ShaderCompiler::CompileFromFile("shaders/default.fx");
+		m_shaders["plant"] = ShaderCompiler::CompileFromFile("shaders/plant.fx");
 	}
 
 	void AppBase::Initialize(const AppSpec& appSpec)

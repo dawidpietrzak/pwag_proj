@@ -33,7 +33,9 @@ namespace engine
 		void Scale(const glm::vec3& scale);
 
 		const glm::mat4& GetTransformMatrix() const { return m_transform; }
-		void SetTransformMatrix(glm::mat4& transform) { m_transform = transform; }
+		void SetTransformMatrix(const glm::mat4& transform) { m_transform = transform; }
+
+		bool IsCreated() const { return m_mesh.IsCreated(); }
 
 	private:
 		Mesh m_mesh;

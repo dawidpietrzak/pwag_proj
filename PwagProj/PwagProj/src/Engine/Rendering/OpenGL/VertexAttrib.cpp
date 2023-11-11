@@ -12,13 +12,13 @@ namespace engine
 
 	}
 
-	void VertexAttrib::Create(const std::vector<GLuint>& count)
+	void VertexAttrib::Create(const std::vector<VertexAttribLayout>& layout)
 	{
-		m_layout = count;
+		m_layout = layout;
 		m_stride = 0;
 		for (size_t i = 0; i < m_layout.size(); i++)
 		{
-			m_stride += m_layout[i] * sizeof(GLfloat);
+			m_stride += m_layout[i].FloatsNumber * sizeof(GLfloat);
 		}
 	}
 
@@ -27,9 +27,14 @@ namespace engine
 		size_t currentOffset = 0;
 		for (size_t i = 0; i < m_layout.size(); i++)
 		{
-			glVertexAttribPointer((GLuint)i, m_layout[i], GL_FLOAT, GL_FALSE, m_stride, (void*)currentOffset);
-			glEnableVertexAttribArray((GLuint)i);
-			currentOffset += (size_t)m_layout[i] * sizeof(GLfloat);
+			const VertexAttribLayout& layout = m_layout[i];
+			glVertexAttribPointer((GLuint)layout.LayoutIndex, layout.FloatsNumber, GL_FLOAT, GL_FALSE, m_stride, (void*)currentOffset);
+			glEnableVertexAttribArray((GLuint)layout.LayoutIndex);
+			if (layout.Divisor > 0)
+			{
+				glVertexAttribDivisor((GLuint)layout.LayoutIndex, layout.Divisor);
+			}
+			currentOffset += (size_t)layout.FloatsNumber * sizeof(GLfloat);
 		}
 	}
 
