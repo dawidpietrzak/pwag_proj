@@ -16,11 +16,14 @@ layout(location = 9) in float aLength;
 uniform mat4 uProjectionMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uModelMatrix;
+uniform mat4 uLightProjectionMatrix;
+uniform mat4 uLightViewMatrix;
+uniform int uShadowPass;
 
 out vec3 FragPos;
 out vec2 TexCoord;
 out vec3 Normal;
-
+out vec4 FragPosLightSpace;
 
 void main() {
 	mat4 transformMatrix = mat4(aTransformCol1, aTransformCol2, aTransformCol3, aTransformCol4);
@@ -33,7 +36,14 @@ void main() {
 		pos.x *= aBottomScale;
 		pos.z *= aBottomScale;
 	}
-	gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * transformMatrix * vec4(pos, 1.0);
+
+	if (uShadowPass == 0) {
+		gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * transformMatrix * vec4(pos, 1.0);
+	}
+	else {
+		gl_Position = uLightProjectionMatrix * uLightViewMatrix * uModelMatrix * transformMatrix * vec4(pos, 1.0);
+	}
+
 	FragPos = pos;
 	TexCoord = aTexCoord;
 
@@ -47,17 +57,34 @@ void main() {
 in vec3 FragPos;
 in vec2 TexCoord;
 in vec3 Normal;
+in vec4 FragPosLightSpace;
 
 out vec4 FragColor;
 
-vec3 lightPos = vec3(-15, 20, -15);
-
+uniform vec3 uLightPos;
 uniform sampler2D uTexture;
+uniform sampler2D uDepthTexture;
+uniform int uShadowPass;
+
+float shadowCalculation(vec3 lightDir, vec3 normal) {
+	vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
+	projCoords = projCoords * 0.5 + 0.5;
+	float closestDepth = texture(uDepthTexture, projCoords.xy).r;
+	float currentDepth = projCoords.z;
+	float bias = 0.005;
+	return currentDepth - bias > closestDepth ? 0.85 : 0.0;
+}
 
 void main() {
-	vec3 norm = normalize(Normal);
-	vec3 lightDir = normalize(lightPos - FragPos);
-	float diff = max(dot(norm, lightDir), 0.1);
-	vec4 resultColor = texture(uTexture, TexCoord) * diff;
-	FragColor = vec4(resultColor.xyz, 1);
+	if (uShadowPass == 0) {
+		vec3 norm = normalize(Normal);
+		vec3 lightDir = normalize(uLightPos - FragPos);
+		float diff = max(dot(norm, lightDir), 0.1);
+		float shadow = shadowCalculation(lightDir, norm);
+
+		vec4 ambientColor = vec4(1, 1, 1, 1);
+		vec4 diffuseColor = texture(uTexture, TexCoord);
+		vec4 resultColor = ambientColor * 0.05 + (1.0 - shadow) * diffuseColor * diff;
+		FragColor = vec4(resultColor.xyz, 1);
+	}
 }

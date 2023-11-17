@@ -35,6 +35,7 @@ void MainScene::OnStart()
 	auto terrainMaterial = assetManager->GetMaterial("terrain_mat");
 	auto terrainMesh = assetManager->GetMesh("terrain");
 	m_terrain = std::make_unique<engine::Entity>(terrainMesh, terrainMaterial);
+	m_terrain->Translate({ 0, -1, 0 });
 
 	m_defaultMaterial = assetManager->GetMaterial("plant_mat");
 	
@@ -46,7 +47,6 @@ void MainScene::OnUIUpdate()
 	ImGui::Begin("Hello, world!");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-	
 	OnLSystemUIUpdate();
 
 	ImGui::End();
@@ -145,8 +145,11 @@ void MainScene::OnLSystemUIUpdate()
 void MainScene::OnUpdate(float deltaTime)
 {
 	engine::Renderer::Begin(m_camera);
-	//engine::Renderer::Draw(m_terrain);
+	engine::Renderer::Draw(m_terrain);
 	if (m_plantEntity.IsCreated())
+	{
+		m_plantEntity.Translate({ 0.0005f, 0, 0 });
 		engine::Renderer::Draw(m_plantEntity);
+	}
 	engine::Renderer::End();
 }

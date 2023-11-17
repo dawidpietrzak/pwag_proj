@@ -18,7 +18,7 @@ namespace engine
 		void Bind() const;
 
 		Mesh GetMesh() const { return m_mesh; }
-		Material GetMaterial() const { return m_material; }
+		Material& GetMaterial() { return m_material; }
 
 		void SetMesh(const Mesh& mesh) { m_mesh = mesh; }
 		void DestroyMesh() { m_mesh.Destroy(); }

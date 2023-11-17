@@ -20,6 +20,7 @@ namespace engine
 		void Unbind() const;
 
 		void SetInt(const std::string& uniformName, int value) const;
+		void SetVec3f(const std::string& uniformName, const glm::vec3& vector) const;
 		void SetMat4f(const std::string& uniformName, const glm::mat4& matrix) const;
 
 	private:

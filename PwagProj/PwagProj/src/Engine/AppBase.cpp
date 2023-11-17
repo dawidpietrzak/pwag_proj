@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 #include <Engine/Rendering/OpenGL/ShaderCompiler.h>
+#include <Engine/Rendering/OpenGL/Viewport.h>
+#include <Engine/Rendering/Renderer.h>
 
 #include <Engine/Vendor/ImGui/imgui.h>
 #include <Engine/Vendor/ImGui/imgui_impl_glfw.h>
@@ -67,6 +69,9 @@ namespace engine
 
 		ImGui_ImplGlfw_InitForOpenGL(m_window.GetNativeWindow(), true);
 		ImGui_ImplOpenGL3_Init("#version 330");
+
+		Viewport::Initialize(appSpec.WindowWidth, appSpec.WindowHeight);
+		Renderer::Initialize();
 	}
 
 	void AppBase::Cleanup()
@@ -78,6 +83,7 @@ namespace engine
 			shaderKv.second.Destroy();
 
 		m_assetManager->Destroy();
+		Renderer::Destroy();
 	}
 
 	void AppBase::SetCurrentScene(const std::string& sceneName)

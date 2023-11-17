@@ -25,7 +25,7 @@ namespace engine
 	{
 		Image image = ImageTools::LoadImageFromFile(filePath);
 		Texture texture;
-		texture.Create(image);
+		texture.CreateFromImage(image);
 		m_textures[textureName] = texture;
 		return texture;
 	}
