@@ -13,30 +13,26 @@ uniform mat4 uLightProjectionMatrix;
 uniform mat4 uLightViewMatrix;
 uniform int uShadowPass;
 
-out vec3 FragPos;
+out vec4 FragPos;
 out vec2 TexCoord;
 out vec3 Normal;
 out vec4 FragPosLightSpace;
 
 void main() {
-	FragPos = aPos;
+	FragPos = uModelMatrix * vec4(aPos, 1);
 	TexCoord = aTexCoord;
 	Normal = aNormal;
 
+	gl_Position = uProjectionMatrix * uViewMatrix * FragPos;
 	if (uShadowPass == 0) {
-		gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aPos, 1.0);
+		FragPosLightSpace = uLightProjectionMatrix * uLightViewMatrix * FragPos;
 	}
-	else {
-		gl_Position = uLightProjectionMatrix * uLightViewMatrix * uModelMatrix * vec4(aPos, 1.0);
-	}
-
-	FragPosLightSpace = uLightProjectionMatrix * uLightViewMatrix * uModelMatrix * vec4(aPos, 1.0);
 }
 
 [engine::fragment_part]
 #version 330
 
-in vec3 FragPos;
+in vec4 FragPos;
 in vec2 TexCoord;
 in vec3 Normal;
 in vec4 FragPosLightSpace;
@@ -48,9 +44,12 @@ uniform vec3 uLightPos;
 uniform sampler2D uTexture;
 uniform sampler2D uDepthTexture;
 
-float shadowCalculation(vec3 lightDir, vec3 normal) {
+float shadowCalculation() {
 	vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
 	projCoords = projCoords * 0.5 + 0.5;
+	if (projCoords.z > 1.0)
+		return 0.0;
+
 	float closestDepth = texture(uDepthTexture, projCoords.xy).r;
 	float currentDepth = projCoords.z;
 	float bias = 0.005;
@@ -60,9 +59,9 @@ float shadowCalculation(vec3 lightDir, vec3 normal) {
 void main() {
 	if (uShadowPass == 0) {
 		vec3 norm = normalize(Normal);
-		vec3 lightDir = normalize(uLightPos - FragPos);
+		vec3 lightDir = normalize(uLightPos - FragPos.xyz);
 		float diff = max(dot(norm, lightDir), 0.1);
-		float shadow = shadowCalculation(lightDir, norm);
+		float shadow = shadowCalculation();
 
 		vec4 ambientColor = vec4(1, 1, 1, 1);
 		vec4 diffuseColor = texture(uTexture, TexCoord);

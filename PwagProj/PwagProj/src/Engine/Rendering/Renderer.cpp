@@ -5,18 +5,17 @@
 
 namespace engine
 {
-	static const glm::vec3 LightPosition = { -15, 20, -15 };
-
 	std::shared_ptr<Camera> Renderer::s_camera;
 	std::vector<Entity*> Renderer::s_entitiesToDraw;
 	Framebuffer Renderer::s_framebuffer;
 	glm::mat4 Renderer::s_lightProjectionMatrix;
 	glm::mat4 Renderer::s_lightViewMatrix;
+	glm::vec3 Renderer::s_lightPosition;
 
 	void Renderer::Initialize()
 	{
-		s_lightProjectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 1000.0f);
-		s_lightViewMatrix = glm::lookAt(LightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		s_lightProjectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 50.0f);
+		s_lightViewMatrix = glm::lookAt(s_lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		s_framebuffer.CreateDepthBuffer(1024, 1024);
 	}
 
@@ -29,6 +28,12 @@ namespace engine
 	{
 		s_camera = camera;
 		s_entitiesToDraw.clear();
+	}
+
+	void Renderer::SetLightPosition(const glm::vec3& position)
+	{
+		s_lightPosition = position;
+		s_lightViewMatrix = glm::lookAt(s_lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	}
 
 	void Renderer::Draw(const Entity& entity)
@@ -58,6 +63,7 @@ namespace engine
 		s_framebuffer.Bind();
 
 		glClear(GL_DEPTH_BUFFER_BIT);
+		glCullFace(GL_FRONT);
 
 		for (const auto entity : s_entitiesToDraw)
 		{
@@ -81,6 +87,8 @@ namespace engine
 			}
 		}
 
+		glCullFace(GL_BACK);
+
 		s_framebuffer.Unbind();
 		Viewport::SetDefaultSize();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -98,7 +106,7 @@ namespace engine
 			material.SetModelMatrix(entity->GetTransformMatrix());
 			material.SetLightProjectionMatrix(s_lightProjectionMatrix);
 			material.SetLightViewMatrix(s_lightViewMatrix);
-			material.SetLightPosition(LightPosition);
+			material.SetLightPosition(s_lightPosition);
 			material.SetDepthTexture(s_framebuffer.GetTexture());
 			material.SetIsShadowPass(false);
 

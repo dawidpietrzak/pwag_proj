@@ -17,11 +17,15 @@ namespace engine
 
 		static void Begin(const std::shared_ptr<Camera>& camera);
 
+		static void SetLightPosition(const glm::vec3& position);
+
 		static void Draw(const Entity& entity);
 		static void Draw(const std::unique_ptr<Entity>& entity);
 		static void Draw(const std::shared_ptr<Entity>& entity);
 
 		static void End();
+
+		static Framebuffer& GetFramebuffer() { return s_framebuffer; }
 
 	private:
 		static std::vector<Entity*> s_entitiesToDraw;
@@ -30,6 +34,7 @@ namespace engine
 		static Framebuffer s_framebuffer;
 		static glm::mat4 s_lightProjectionMatrix;
 		static glm::mat4 s_lightViewMatrix;
+		static glm::vec3 s_lightPosition;
 
 	private:
 		static void RunShadowPass();

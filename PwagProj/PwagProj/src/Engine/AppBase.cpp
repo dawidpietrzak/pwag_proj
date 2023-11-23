@@ -13,7 +13,6 @@ namespace engine
 {
 	AppBase::AppBase()
 	{
-		m_camera = std::make_shared<Camera>();
 		m_assetManager = std::make_shared<AssetManager>(m_shaders);
 	}
 
@@ -25,13 +24,16 @@ namespace engine
 		OnStart();
 
 		m_running = true;
+		float deltaTime = 0.016f;
 		while (m_running)
 		{
+			float startTime = glfwGetTime();
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			if (m_currentScene)
 			{
-				m_currentScene->OnUpdate(0.016f);
+				m_currentScene->OnUpdate(deltaTime);
 
 				ImGui_ImplOpenGL3_NewFrame();
 				ImGui_ImplGlfw_NewFrame();
@@ -44,6 +46,7 @@ namespace engine
 			}
 
 			m_window.Update();
+			deltaTime = glfwGetTime() - startTime;
 		}
 
 		Cleanup();
@@ -60,8 +63,12 @@ namespace engine
 		glfwInit();
 		m_window.Create(appSpec.WindowWidth, appSpec.WindowHeight);
 		m_window.SetOnCloseHandler([&]() { m_running = false; });
+		m_window.SetOnKeyboardHandler([this](KeyState keyState, int key) { OnKeyboard(keyState, key); });
+		m_window.SetOnMouseMoveHandler([this](int posX, int posY) { OnMouseMove(posX, posY); });
 		glewInit();
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -90,5 +97,24 @@ namespace engine
 	{
 		m_currentScene = m_scenes[sceneName];
 		m_currentScene->OnStart();
+	}
+
+	void AppBase::OnKeyboard(KeyState keyState, int key)
+	{
+		if (keyState == KeyState::Pressed)
+		{
+			m_keysPressed.insert(key);
+		}
+		else if (keyState == KeyState::Released)
+		{
+			m_keysPressed.erase(key);
+		}
+
+		m_currentScene->OnKeyboard(keyState, key);
+	}
+
+	void AppBase::OnMouseMove(int posX, int posY)
+	{
+		m_currentScene->OnMouseMove(posX, posY);
 	}
 }

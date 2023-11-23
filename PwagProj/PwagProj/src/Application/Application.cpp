@@ -34,6 +34,7 @@ void Application::LoadResources()
 	plantMaterial.SetTexture(blobTexture);
 
 	m_assetManager->LoadMeshFromFile("assets/terrain.obj", "terrain");
+	m_assetManager->LoadMeshFromFile("assets/cube.obj", "cube");
 
 	AddScene("main_scene", new MainScene());
 	SetCurrentScene("main_scene");
