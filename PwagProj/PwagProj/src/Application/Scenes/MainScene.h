@@ -5,6 +5,7 @@
 #include <Engine/Rendering/Camera.h>
 
 #include <Application/LSystem/PlantFactory.h>
+#include <Application/LSystem/ForestGenerator.h>
 #include <Application/Tools/PlantInstancedMeshGen.h>
 
 #include <memory>
@@ -24,13 +25,14 @@ private:
 	std::unique_ptr<engine::Entity> m_terrain;
 
 	engine::Material m_plantMaterial;
-	engine::Entity m_plantEntity;
+	
 	engine::Entity m_cubeEntity;
-	PlantInstancedMeshGen m_plantInstancedMeshGen;
+
+	ForestGenerator m_forestGenerator;
 
 	int m_lastMouseX = -1;
 	int m_lastMouseY = -1;
 
-	std::unique_ptr<ILSystemGrammar> m_lSystemGrammar;
+	std::shared_ptr<ILSystemGrammar> m_lSystemGrammar;
 	float m_timer = 0.0f;
 };

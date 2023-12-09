@@ -6,6 +6,12 @@ SimpleLSystemGrammar::SimpleLSystemGrammar()
 
 }
 
+SimpleLSystemGrammar::SimpleLSystemGrammar(const SimpleLSystemGrammar& other)
+{
+    this->currentString = other.currentString;
+    this->rules = other.rules;
+}
+
 void SimpleLSystemGrammar::addRule(char predecessor, const std::string& successor)
 {
     rules[predecessor].push_back(successor);

@@ -3,10 +3,14 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <memory>
 
 // Abstract base class for L-System Grammars
 class ILSystemGrammar {
 public:
+
+    virtual std::shared_ptr<ILSystemGrammar> clone() const = 0;
+
     // Pure virtual function for adding a production rule
     virtual void addRule(char predecessor, const std::string& successor) = 0;
 
@@ -27,6 +31,11 @@ class SimpleLSystemGrammar : public ILSystemGrammar
 {
 public:
     SimpleLSystemGrammar();
+    std::shared_ptr<ILSystemGrammar> clone() const override {
+        return std::make_shared<SimpleLSystemGrammar>(*this);
+    }
+    SimpleLSystemGrammar(const SimpleLSystemGrammar& other); // Copy constructor
+
     void addRule(char predecessor, const std::string& successor) override;
     void generate(int iterations) override;
 

@@ -151,6 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Application\LSystem\Distribution\DistributionStrategy.cpp" />
+    <ClCompile Include="src\Application\LSystem\Grammar\ProbabilisticLSystemGrammar.cpp" />
+    <ClCompile Include="src\Application\LSystem\ForestGenerator.cpp" />
     <ClCompile Include="src\Application\LSystem\Grammar\LSystemGrammar.cpp" />
     <ClCompile Include="src\Application\LSystem\PlantFactory.cpp" />
     <ClCompile Include="src\Application\Tools\PlantInstancedMeshGen.cpp" />
@@ -188,8 +191,12 @@
     <ClCompile Include="src\Engine\Rendering\OpenGL\VertexBuffer.cpp" />
     <ClCompile Include="src\Engine\Rendering\OpenGL\VertexArray.cpp" />
     <ClCompile Include="src\Engine\Rendering\OpenGL\Texture.cpp" />
+    <ClCompile Include="src\Application\LSystem\Grammar\TextLSystemGrammar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Application\LSystem\Distribution\DistributionStrategy.h" />
+    <ClInclude Include="src\Application\LSystem\Grammar\ProbabilisticLSystemGrammar.h" />
+    <ClInclude Include="src\Application\LSystem\ForestGenerator.h" />
     <ClInclude Include="src\Application\LSystem\Grammar\LSystemGrammar.h" />
     <ClInclude Include="src\Application\LSystem\PlantFactory.h" />
     <ClInclude Include="src\Application\Tools\PlantInstancedMeshGen.h" />
@@ -227,6 +234,7 @@
     <ClInclude Include="src\Engine\Rendering\OpenGL\VertexBuffer.h" />
     <ClInclude Include="src\Engine\Rendering\OpenGL\VertexArray.h" />
     <ClInclude Include="src\Engine\Rendering\OpenGL\Texture.h" />
+    <ClInclude Include="src\Application\LSystem\Grammar\TextLSystemGrammar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

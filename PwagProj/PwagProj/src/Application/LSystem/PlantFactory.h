@@ -17,6 +17,6 @@ struct PlantSegment
 class PlantFactory
 {
 public:
-    static std::vector<PlantSegment> CreatePlant(const std::string& grammarString);
+    static std::vector<PlantSegment> CreatePlant(const std::string& grammarString, float segmentLength, float angle, float bottomScale, float topScale);
 };
 

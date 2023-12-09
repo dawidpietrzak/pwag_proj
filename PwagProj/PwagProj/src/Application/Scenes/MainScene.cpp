@@ -13,12 +13,15 @@
 
 #include <vector>
 #include <string>
+#include <Application/LSystem/Grammar/ProbabilisticLSystemGrammar.h>
+#include <Application/LSystem/Grammar/TextLSystemGrammar.h>
 
 
 
 struct Rule {
-	std::string symbol;
-	std::string replacement;
+    std::string symbol;
+    std::string replacement;
+    float probability; // Added probability field
 };
 
 // Vector to hold all the rules
@@ -26,7 +29,6 @@ std::vector<Rule> rules;
 
 void MainScene::OnStart()
 {
-	m_plantInstancedMeshGen.LoadBaseMeshData("assets/cylinderTransformBottom.obj");
 
 	auto app = Application::Get();
 	m_camera = std::make_shared<engine::Camera>();
@@ -44,7 +46,16 @@ void MainScene::OnStart()
 	m_cubeEntity.SetPosition({ 0, 2, 0 });
 	
 	rules.push_back(Rule{ "F", "FF-[&F^F^F]+[^F*&F&F*]<[^f*^f*&f*]" });
-	m_plantEntity.SetPosition({ 0, 1, 0 });
+
+	m_forestGenerator.init("assets/cylinderTransformBottom.obj", m_plantMaterial);
+	glm::vec2 area = glm::vec2(20, 20);
+	int16_t gridSubdivision = 10;
+	std::shared_ptr<IDistributionStrategy> gridDistribution = std::make_shared<GridRandomDistributionStrategy>(area, gridSubdivision);
+	gridDistribution->RecalculatePositions();
+	m_forestGenerator.SetDistributionStrategy(gridDistribution);
+	m_forestGenerator.populateForest(5);
+
+	//rules.push_back(Rule{ "F", "FF-[&F^F^F]+[^F*&F&F*]<[^f*^f*&f*]" });
 }
 
 void MainScene::OnUIUpdate()
@@ -60,92 +71,186 @@ void MainScene::OnUIUpdate()
 
 void MainScene::OnLSystemUIUpdate()
 {
+
+
 	ImGui::Text("Lsystem");
 	ImGui::Separator();
 	static std::string initialAxiom = "F";
-	static int generations = 2; // Number of generations to generate
+	static int maxGenerations = 2; // Number of maxGenerations to generate
+	static int treeCount = 5;
+	static int lSystemType = 0; // 0 for Simple, 1 for Probabilistic
+	static const char* lSystemTypes[] = { "Simple L-System", "Probabilistic L-System"}; //, "FromText[unimplemented]" 
+	static int currentGeneration = 0;
 
-	//ImGui::SliderFloat("Top Scale", &m_topScale, 0.1f, 1.0f);
-	//ImGui::SliderFloat("Bottom Scale", &m_bottomScale, 0.1f, 1.0f);
+	static int plantDistributionType = 0;
+	static const char* plantDistributionTypes[] = { "RandomGrid", "TerrainBasedRandomGrid[unimplemented]" };
 
-	ImGui::InputText("Initial Axiom", &initialAxiom);
-	ImGui::InputInt("Generations", &generations);
-	ImGui::Text("Rules");
-	ImGui::Separator();
-	// Iterate over all rules and create an input text field for each
+	// Buffer for input text
+	static char textGrammarInputBuffer[1024] = "";
 
-	for (size_t i = 0; i < rules.size(); ++i) {
-		ImGui::PushID((int)i);
-		ImGui::SetNextItemWidth(50);
-		if (ImGui::InputText("##Symbol", &rules[i].symbol)) {
-			rules[i].symbol = rules[i].symbol.empty() ? '\0' : rules[i].symbol.front();
+
+	auto RegenerateForest = [&](bool forceRecalculation = false) {
+		if (lSystemType == 0) {
+			m_lSystemGrammar = std::make_shared<SimpleLSystemGrammar>();
 		}
-		ImGui::SameLine();
-		float availableWidth = ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize(" - ").x - ImGui::GetStyle().ItemSpacing.x;
-		ImGui::SetNextItemWidth(availableWidth);
-		ImGui::InputText("##Replacement", &rules[i].replacement);
-
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(30);
-		// Add a delete button for each rule
-		std::string button_label = "-##";
-		if (ImGui::Button(button_label.c_str())) {
-			rules.erase(rules.begin() + i);
-			ImGui::PopID(); // PopID before the continue to match the PushID call
-			continue; // skip the rest of the loop as the current element is now deleted
+		else if (lSystemType == 1) {
+			m_lSystemGrammar = std::make_shared<ProbabilisticLSystemGrammar>();
+		}
+		else if (lSystemType == 2) {
+			m_lSystemGrammar = std::make_shared<TextLSystemGrammar>();
 		}
 
-		ImGui::PopID();
+		m_lSystemGrammar->setCurrentString(initialAxiom);
+		for (const auto& rule : rules) {
+			if (lSystemType == 0) {
+				m_lSystemGrammar->addRule(rule.symbol.c_str()[0], rule.replacement);
+			}
+			else if (lSystemType == 1) {
+				std::shared_ptr<ProbabilisticLSystemGrammar> probabilisticLSystemGrammar = std::dynamic_pointer_cast<ProbabilisticLSystemGrammar>(m_lSystemGrammar);
+				if (probabilisticLSystemGrammar)
+					probabilisticLSystemGrammar->addRule(rule.symbol.c_str()[0], rule.replacement, rule.probability);
+			}
+			else if (lSystemType == 2) {
+				std::shared_ptr<TextLSystemGrammar> textLSystemGrammar = std::dynamic_pointer_cast<TextLSystemGrammar>(m_lSystemGrammar);
+				if (textLSystemGrammar) {
+					std::string inputText(textGrammarInputBuffer); // Convert to std::string
+					textLSystemGrammar->parseText(inputText); // Process the text
+				}
+					
+			}
+
+		}
+
+		m_forestGenerator.generate(maxGenerations, m_lSystemGrammar, forceRecalculation);
+		m_forestGenerator.setGeneration(currentGeneration);
+	};
+
+	auto PopulateForest = [&]() {
+		if (plantDistributionType == 0) {
+			static glm::vec2 area = glm::vec2(20, 20);
+			static int16_t gridSubdivision = 10;
+			std::shared_ptr<IDistributionStrategy> gridDistribution = std::make_shared<GridRandomDistributionStrategy>(area, gridSubdivision);
+			gridDistribution->RecalculatePositions();
+			m_forestGenerator.SetDistributionStrategy(gridDistribution);
+			m_forestGenerator.populateForest(treeCount);
+		}
+	};
+
+
+	if (ImGui::Combo("Plant Distribution Algorithm", &plantDistributionType, plantDistributionTypes, IM_ARRAYSIZE(plantDistributionTypes))) {
+
+		PopulateForest();
+	}
+	if (ImGui::SliderInt("Tree Count", &treeCount, 0, 20)) {
+		m_forestGenerator.populateForest(treeCount);
+		RegenerateForest();
 	}
 
-	// Button to add a new rule
+	ImGui::Spacing();
+
+	static int plantTemplate = 0;
+	static const char* plantTemplateTypes[] = { "Custom", "Plant1"};
+
+	
+	
+	if (ImGui::InputInt("Max Generations", &maxGenerations))
+		RegenerateForest(true);
+	if (ImGui::SliderInt("Current generation", &currentGeneration, 0, maxGenerations)) {
+		m_forestGenerator.setGeneration(currentGeneration);
+	}
+	
+
+	if (ImGui::Combo("Template", &plantTemplate, plantTemplateTypes, IM_ARRAYSIZE(plantTemplateTypes))) {
+
+		if (plantTemplate == 1) {
+			rules.clear();
+
+			lSystemType = 1;
+			m_forestGenerator.segmentLength = 0.5f;
+			m_forestGenerator.angle = 33;
+			m_forestGenerator.topScale = 0.075;
+			m_forestGenerator.bottomScale = 0.1f;
+
+
+			rules.push_back(Rule{ "F", "F[&++F]F[^--F]", 0.33 });
+			rules.push_back(Rule{ "F", "F[&+F]", 0.33 });
+			rules.push_back(Rule{ "F", "F[^-F]", 0.34});
+
+			RegenerateForest(true);
+		}
+
+	}
+
+
+
+	ImGui::Combo("L-System Type", &lSystemType, lSystemTypes, IM_ARRAYSIZE(lSystemTypes));
+
+	if (ImGui::CollapsingHeader("Lsystem Paramethers")) {
+		if (ImGui::SliderFloat("Length", &m_forestGenerator.segmentLength, 0.01f, 3.0f)
+			|| ImGui::SliderFloat("Angle", &m_forestGenerator.angle, 0.0f, 180.0f)
+			|| ImGui::SliderFloat("TopScale", &m_forestGenerator.topScale, 0.01f, 0.5f)
+			|| ImGui::SliderFloat("BottomScale", &m_forestGenerator.bottomScale, 0.01f, 0.5f)) {
+			plantTemplate = 0;
+			RegenerateForest(false);
+		}
+		ImGui::Separator();
+	}
+
+	ImGui::InputText("Initial Axiom", &initialAxiom);
+	ImGui::Text("Rules");
+	ImGui::Separator();
+
+	for (size_t i = 0; i < rules.size(); ++i) {
+
+		if (lSystemType == 0 || lSystemType == 1)
+		{
+			ImGui::PushID((int)i);
+			ImGui::SetNextItemWidth(50);
+			if (ImGui::InputText("##Symbol", &rules[i].symbol))	plantTemplate = 0;
+
+			// Conditional probability field for Probabilistic L-System
+			if (lSystemType == 1) {
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(60); // Adjusted width
+				ImGui::DragFloat("##Probability", &rules[i].probability, 0.0f, 1.0f);
+			}
+
+			ImGui::SameLine();
+			float availableWidth = ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize(" - ").x - ImGui::GetStyle().ItemSpacing.x;
+			ImGui::SetNextItemWidth(availableWidth); // Adjusted width
+
+			if (ImGui::InputText("##Replacement", &rules[i].replacement)) plantTemplate = 0;
+
+
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(30);
+			std::string button_label = "-##";
+			if (ImGui::Button(button_label.c_str())) {
+				rules.erase(rules.begin() + i);
+				ImGui::PopID();
+				continue;
+			}
+			ImGui::PopID();
+		}
+		else if (lSystemType == 2)
+		{
+			if (ImGui::InputText("##Input text", textGrammarInputBuffer, IM_ARRAYSIZE(textGrammarInputBuffer))){}
+		}
+		
+	}
+
 	if (ImGui::Button("Add Rule")) {
-		rules.push_back(Rule{ "\0", "" });
+		rules.push_back(Rule{ "\0", "", 0.0f }); // Initialize probability to 0.0
+		plantTemplate = 0;
 	}
 
 	static std::string lSystemOutput;
-	if (ImGui::Button("Generate"))
+	if (ImGui::Button("Regenerate"))
 	{
-		if (m_plantEntity.IsCreated())
-		{
-			m_plantEntity.DestroyMesh();
-		}
-
-		m_lSystemGrammar = std::make_unique<SimpleLSystemGrammar>();
-		m_lSystemGrammar->setCurrentString(initialAxiom);
-		for (const auto& rule : rules)
-			m_lSystemGrammar->addRule(rule.symbol.c_str()[0], rule.replacement);
-
-		m_lSystemGrammar->generate(generations);
-		lSystemOutput = m_lSystemGrammar->getCurrentString();
-		auto plantSegments = PlantFactory::CreatePlant(lSystemOutput);
-		auto plantMesh = m_plantInstancedMeshGen.GenerateMesh(plantSegments);
-		m_plantEntity.Create(plantMesh, m_plantMaterial);
+		RegenerateForest(true);
 	}
-
-	// Provide a button to copy the text to the clipboard
-	if (ImGui::Button("Copy output to clipboard")) {
-		ImGui::SetClipboardText(lSystemOutput.c_str());
-	}
-	
-	if (ImGui::CollapsingHeader("L-System Output", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		// Wrap the text to the width of the child window
-		ImGui::PushTextWrapPos();
-		if (lSystemOutput.size() < 1000)
-		{
-			ImGui::TextUnformatted(lSystemOutput.c_str());
-		}
-		else
-		{
-			ImGui::TextUnformatted("Output too long");
-		}
-		
-		ImGui::PopTextWrapPos();
-	}
-	
-	
 }
+
 
 void MainScene::OnUpdate(float deltaTime)
 {
@@ -184,10 +289,9 @@ void MainScene::OnUpdate(float deltaTime)
 	engine::Renderer::SetLightPosition({ 15 * cosf(m_timer * 0.5f), 20, 15 * sinf(m_timer * 0.5f) });
 	engine::Renderer::Draw(m_terrain);
 	engine::Renderer::Draw(m_cubeEntity);
-	if (m_plantEntity.IsCreated())
-	{
-		engine::Renderer::Draw(m_plantEntity);
-	}
+
+	m_forestGenerator.drawTrees();
+
 	engine::Renderer::End();
 }
 
