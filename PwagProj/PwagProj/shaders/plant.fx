@@ -37,6 +37,11 @@ void main() {
 		pos.z *= aBottomScale;
 	}
 
+    if (pos.y > 0)
+    {
+        pos.y *= aLength;
+    }
+	
 	gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * transformMatrix * vec4(pos, 1.0);
 	if (uShadowPass == 0) {
 		
