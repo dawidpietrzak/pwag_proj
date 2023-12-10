@@ -35,7 +35,6 @@ public:
         return std::make_shared<SimpleLSystemGrammar>(*this);
     }
     SimpleLSystemGrammar(const SimpleLSystemGrammar& other); // Copy constructor
-
     void addRule(char predecessor, const std::string& successor) override;
     void generate(int iterations) override;
 

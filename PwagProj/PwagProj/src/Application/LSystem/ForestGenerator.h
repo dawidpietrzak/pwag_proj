@@ -19,8 +19,8 @@ public:
 	void init(const std::string& baseMeshPath, engine::Material& treeMaterial);
 	void populateForest(int treeCount);
 	void generate(int iterations, std::shared_ptr<ILSystemGrammar> lSystemGrammar, bool forceRecalculation = false);
-	void setGeneration(int generation);
 	inline void SetDistributionStrategy(std::shared_ptr<IDistributionStrategy> strategy) { m_distributionStrategy = strategy; };
+	void setTime(float time, float timeForSingleGeneration, int maxGenerations);
 	void drawTrees();
 
 	float segmentLength = 1.0f;

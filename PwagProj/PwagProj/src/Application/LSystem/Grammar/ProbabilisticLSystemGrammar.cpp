@@ -2,7 +2,10 @@
 #include <random>
 
 
-ProbabilisticLSystemGrammar::ProbabilisticLSystemGrammar() {}
+ProbabilisticLSystemGrammar::ProbabilisticLSystemGrammar() {
+    this->addRule('(', ""); // lerp growth only on new generation
+    this->addRule(')', ""); // lerp growth only on new generation
+}
 
 ProbabilisticLSystemGrammar::ProbabilisticLSystemGrammar(const ProbabilisticLSystemGrammar& other) {
     this->currentString = other.currentString;
@@ -69,6 +72,6 @@ inline void ProbabilisticLSystemGrammar::generate(int iterations) {
                 nextString += c;
             }
         }
-        currentString = nextString;
+        currentString = nextString + "@"; // @ end of single generation
     }
 }

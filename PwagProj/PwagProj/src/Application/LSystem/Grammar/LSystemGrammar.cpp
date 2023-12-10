@@ -1,9 +1,11 @@
 // SimpleLSystemGrammar.cpp
 #include "LSystemGrammar.h"
+#include <iostream>
 
 SimpleLSystemGrammar::SimpleLSystemGrammar()
 {
-
+    this->addRule('(', ""); // lerp growth only on new generation
+    this->addRule(')', ""); // lerp growth only on new generation
 }
 
 SimpleLSystemGrammar::SimpleLSystemGrammar(const SimpleLSystemGrammar& other)
@@ -14,7 +16,7 @@ SimpleLSystemGrammar::SimpleLSystemGrammar(const SimpleLSystemGrammar& other)
 
 void SimpleLSystemGrammar::addRule(char predecessor, const std::string& successor)
 {
-    rules[predecessor].push_back(successor);
+     rules[predecessor].push_back(successor);
 }
 
 void SimpleLSystemGrammar::generate(int iterations)

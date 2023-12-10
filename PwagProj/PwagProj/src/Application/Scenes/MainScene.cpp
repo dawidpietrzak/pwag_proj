@@ -45,7 +45,7 @@ void MainScene::OnStart()
 	m_cubeEntity.Create(cubeMesh, defaultMaterial);
 	m_cubeEntity.SetPosition({ 0, 2, 0 });
 	
-	rules.push_back(Rule{ "F", "FF-[&F^F^F]+[^F*&F&F*]<[^f*^f*&f*]" });
+	rules.push_back(Rule{ "F", "(F(+F)[>+F])" });
 
 	m_forestGenerator.init("assets/cylinderTransformBottom.obj", m_plantMaterial);
 	glm::vec2 area = glm::vec2(20, 20);
@@ -55,7 +55,6 @@ void MainScene::OnStart()
 	m_forestGenerator.SetDistributionStrategy(gridDistribution);
 	m_forestGenerator.populateForest(5);
 
-	//rules.push_back(Rule{ "F", "FF-[&F^F^F]+[^F*&F&F*]<[^f*^f*&f*]" });
 }
 
 void MainScene::OnUIUpdate()
@@ -80,7 +79,8 @@ void MainScene::OnLSystemUIUpdate()
 	static int treeCount = 5;
 	static int lSystemType = 0; // 0 for Simple, 1 for Probabilistic
 	static const char* lSystemTypes[] = { "Simple L-System", "Probabilistic L-System"}; //, "FromText[unimplemented]" 
-	static int currentGeneration = 0;
+	static float framesPerGeneration = 100;
+	static int time = 0;
 
 	static int plantDistributionType = 0;
 	static const char* plantDistributionTypes[] = { "RandomGrid", "TerrainBasedRandomGrid[unimplemented]" };
@@ -122,7 +122,7 @@ void MainScene::OnLSystemUIUpdate()
 		}
 
 		m_forestGenerator.generate(maxGenerations, m_lSystemGrammar, forceRecalculation);
-		m_forestGenerator.setGeneration(currentGeneration);
+		m_forestGenerator.setTime(time, framesPerGeneration, maxGenerations);
 	};
 
 	auto PopulateForest = [&]() {
@@ -155,8 +155,8 @@ void MainScene::OnLSystemUIUpdate()
 	
 	if (ImGui::InputInt("Max Generations", &maxGenerations))
 		RegenerateForest(true);
-	if (ImGui::SliderInt("Current generation", &currentGeneration, 0, maxGenerations)) {
-		m_forestGenerator.setGeneration(currentGeneration);
+	if (ImGui::SliderInt("Current generation", &time, 0, maxGenerations* framesPerGeneration)) {
+		m_forestGenerator.setTime(time, framesPerGeneration, maxGenerations);
 	}
 	
 
@@ -172,9 +172,10 @@ void MainScene::OnLSystemUIUpdate()
 			m_forestGenerator.bottomScale = 0.1f;
 
 
-			rules.push_back(Rule{ "F", "F[&++F]F[^--F]", 0.33 });
-			rules.push_back(Rule{ "F", "F[&+F]", 0.33 });
-			rules.push_back(Rule{ "F", "F[^-F]", 0.34});
+			rules.push_back(Rule{ "F", "(F[&++F]F[^--F])", 0.30 });
+			rules.push_back(Rule{ "F", "(F[&+>F])", 0.30 });
+			rules.push_back(Rule{ "F", "(F[^-F])", 0.30});
+			rules.push_back(Rule{ "F", "F(F)", 0.10 });
 
 			RegenerateForest(true);
 		}

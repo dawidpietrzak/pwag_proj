@@ -4,6 +4,7 @@
 #include <GLM/glm.hpp>
 #include <memory>
 #include <vector>
+#include <functional>
 
 
 struct PlantSegment
@@ -17,6 +18,6 @@ struct PlantSegment
 class PlantFactory
 {
 public:
-    static std::vector<PlantSegment> CreatePlant(const std::string& grammarString, float segmentLength, float angle, float bottomScale, float topScale);
+    static std::vector<PlantSegment> CreatePlant(const std::string& grammarString, float growthFactor, float segmentLength, float angle, float bottomScale, float topScale);
 };
 

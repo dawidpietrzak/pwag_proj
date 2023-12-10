@@ -1,6 +1,7 @@
 #include "ForestGenerator.h"
 #include <Engine/Rendering/Renderer.h>
 #include <iostream>
+#include <cmath> // Include the cmath library
 
 ForestGenerator::ForestGenerator()
 {
@@ -26,8 +27,6 @@ void ForestGenerator::populateForest(int treeCount)
 		std::shared_ptr<Plant> plant_ptr = std::make_shared<Plant>();
 		plant_ptr->entity = std::make_shared<engine::Entity>();
 		m_treeEntities.push_back(plant_ptr);
-
-		std::cout << positions[i].x << " " << positions[i].y << " " << positions[i].z << std::endl;
 		plant_ptr->entity->SetPosition(origin+positions[i]);
 	}
 }
@@ -46,12 +45,26 @@ void ForestGenerator::generate(int iterations, std::shared_ptr<ILSystemGrammar> 
 		for (int i = 0; i <= iterations; ++i) {
 			grammarInstance->generate(i == 0 ? 0 : 1);
 			plantEntity->generationStrings.push_back(grammarInstance->getCurrentString());
-			std::cout << "generate" << std::endl;
 		}
 	}
 }
 
-void ForestGenerator::setGeneration(int generation)
+//float exampleGrowthFunction(const float& t, const float& timeForSingleGeneration, const int& maxGenerations) {
+//	// Example implementation (e.g., linear growth)
+//	//https://algorithmicbotany.org/papers/animdev.sig93.pdf
+//	float xmin = 0.0f;
+//	float xmax = 1.0f;
+//	float dx = xmax - xmin;
+//	float T = timeForSingleGeneration * maxGenerations;
+//	return -2*dx/pow(T, 3)*pow(t, 3) + 3 * dx / pow(T, 2) * pow(t, 2) + xmin;
+//}
+
+float exampleGrowthFunction(const float& t, const float& timeForSingleGeneration, const int& maxGenerations) {
+	float T = timeForSingleGeneration * maxGenerations;
+	return 1 - std::pow(1 - t / T, 8);
+}
+
+void ForestGenerator::setTime(float time, float timeForSingleGeneration, int maxGenerations)
 {
 	for (auto& plantEntity : m_treeEntities) {
 		if (plantEntity->generationStrings.empty())
@@ -60,9 +73,11 @@ void ForestGenerator::setGeneration(int generation)
 		if (plantEntity->entity->IsCreated())
 			plantEntity->entity->DestroyMesh();
 
-		std::string lSystemOutput = plantEntity->generationStrings[generation];
+		//std::string lSystemOutput = plantEntity->generationStrings[(int)std::round(time / timeForSingleGeneration)];
+		std::string lSystemOutput = plantEntity->generationStrings[maxGenerations];
 		// Use the L-system output to create plant segments
-		auto plantSegments = PlantFactory::CreatePlant(lSystemOutput, segmentLength, angle, bottomScale, topScale);
+		float growFactor = exampleGrowthFunction(time, timeForSingleGeneration, maxGenerations);
+		auto plantSegments = PlantFactory::CreatePlant(lSystemOutput, growFactor, segmentLength, angle, bottomScale, topScale);
 		auto plantMesh = m_treeMeshGenerator.GenerateMesh(plantSegments);
 		plantEntity->entity->Create(plantMesh, m_treeMaterial);
 	}

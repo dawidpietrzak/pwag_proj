@@ -2,14 +2,17 @@
 
 #include <GLM/gtc/matrix_transform.hpp>
 #include <stack>
+#include <iostream>
 
 
-std::vector<PlantSegment> PlantFactory::CreatePlant(const std::string& grammarString, float segmentLength = 1.0f, float angle = 25.0f, float bottomScale = 0.1f, float topScale = 0.1f)
+std::vector<PlantSegment> PlantFactory::CreatePlant(const std::string& grammarString, float growthFactor, float segmentLength = 1.0f, float angle = 25.0f, float bottomScale = 0.1f, float topScale = 0.08f)
 {
     std::vector<PlantSegment> plantSegments;
     std::stack<glm::mat4> transformStack;
     glm::mat4 currentTransform = glm::mat4(1.0f);
     //currentTransform = glm::scale(currentTransform, glm::vec3(1.0f, 1.0f, 0.4f));
+
+    float gFactor = 1.0f;
 
     for (char c : grammarString)
     {
@@ -18,6 +21,12 @@ std::vector<PlantSegment> PlantFactory::CreatePlant(const std::string& grammarSt
         {
             case 'F': // Create a branch segment
             {
+
+                // B³¹d ale lepiej wizualnie wygl¹da
+                bottomScale *= gFactor;
+                topScale *= gFactor;
+                segmentLength *= gFactor;
+
                 PlantSegment plantSegment;
                 plantSegment.Transform = currentTransform;
                 plantSegment.BottomScale = bottomScale;
@@ -55,6 +64,12 @@ std::vector<PlantSegment> PlantFactory::CreatePlant(const std::string& grammarSt
                 break;
             case '|': // Turn around (rotate 180 degrees around the Y-axis)
                 currentTransform = glm::rotate(currentTransform, glm::radians(180.0f), glm::vec3(0, 1, 0));
+                break;
+            case '(': // new generation
+                gFactor = growthFactor;
+                break;
+            case ')': // end of new generation
+                gFactor = 1.0f;
                 break;
         }
     }
