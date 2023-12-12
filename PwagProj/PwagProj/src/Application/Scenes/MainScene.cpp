@@ -299,17 +299,29 @@ void MainScene::OnUpdate(float deltaTime)
 
 void MainScene::OnMouseMove(int posX, int posY)
 {
-	int deltaX = 0;
-	int deltaY = 0;
-
-	if (m_lastMouseX != -1 && m_lastMouseY != -1)
+	if (Application::Get()->IsRightMouseButtonPressed())
 	{
-		deltaX = (int)(posX - m_lastMouseX);
-		deltaY = (int)(posY - m_lastMouseY);
+		int deltaX = 0;
+		int deltaY = 0;
+
+		if (m_lastMouseX != -1 && m_lastMouseY != -1)
+		{
+			deltaX = (int)(posX - m_lastMouseX);
+			deltaY = (int)(posY - m_lastMouseY);
+		}
+
+		m_lastMouseX = posX;
+		m_lastMouseY = posY;
+
+		m_camera->Rotate({ deltaX * 0.3f, deltaY * 0.3f, 0 });
 	}
+}
 
-	m_lastMouseX = posX;
-	m_lastMouseY = posY;
-
-	m_camera->Rotate({ deltaX * 0.3f, deltaY * 0.3f, 0 });
+void MainScene::OnMouseButton(engine::KeyState keyState, int button)
+{
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && keyState == engine::KeyState::Released)
+	{
+		m_lastMouseX = -1;
+		m_lastMouseY = -1;
+	}
 }

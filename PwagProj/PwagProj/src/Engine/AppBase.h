@@ -37,6 +37,9 @@ namespace engine
 
 		bool IsKeyPressed(int key) const { return m_keysPressed.find(key) != m_keysPressed.end(); }
 
+		bool IsLeftMouseButtonPressed() const { return m_leftMouseButtonPressed; }
+		bool IsRightMouseButtonPressed() const { return m_rightMouseButtonPressed; }
+
 	protected:
 		void Initialize(const AppSpec& appSpec);
 		void AddScene(const std::string& sceneName, Scene* scene) { m_scenes[sceneName] = scene; }
@@ -44,7 +47,10 @@ namespace engine
 	private:
 		Window m_window;
 		bool m_running = false;
+
 		std::unordered_set<int> m_keysPressed;
+		bool m_leftMouseButtonPressed = false;
+		bool m_rightMouseButtonPressed = false;
 
 		std::unordered_map<std::string, Scene*> m_scenes;
 		Scene* m_currentScene = nullptr;
@@ -58,6 +64,7 @@ namespace engine
 		void Cleanup();
 
 		void OnKeyboard(KeyState keyState, int key);
+		void OnMouseButton(KeyState keyState, int button);
 		void OnMouseMove(int posX, int posY);
 	};
 }

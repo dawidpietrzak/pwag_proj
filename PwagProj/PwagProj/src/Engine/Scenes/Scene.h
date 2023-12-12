@@ -14,6 +14,8 @@ namespace engine
 
 		virtual void OnKeyboard(KeyState keyState, int key) { }
 		virtual void OnMouseMove(int posX, int posY) { }
+
+		virtual void OnMouseButton(KeyState keyState, int button) { }
 	};
 }
 

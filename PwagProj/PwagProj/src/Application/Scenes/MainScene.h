@@ -3,12 +3,14 @@
 #include <Engine/Scenes/Scene.h>
 #include <Engine/Rendering/Entity.h>
 #include <Engine/Rendering/Camera.h>
+#include <Engine/Window/Window.h>
 
 #include <Application/LSystem/PlantFactory.h>
 #include <Application/LSystem/ForestGenerator.h>
 #include <Application/Tools/PlantInstancedMeshGen.h>
 
 #include <memory>
+
 
 class MainScene : public engine::Scene
 {
@@ -19,6 +21,7 @@ public:
 	void OnLSystemUIUpdate();
 
 	virtual void OnMouseMove(int posX, int posY) override;
+	virtual void OnMouseButton(engine::KeyState keyState, int button) override;
 
 private:
 	std::shared_ptr<engine::Camera> m_camera;

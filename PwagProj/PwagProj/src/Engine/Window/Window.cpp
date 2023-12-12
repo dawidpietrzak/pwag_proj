@@ -32,6 +32,22 @@ namespace engine
 			window->m_mouseMoveHandleFunc((int)posX, (int)posY);
 	}
 
+	void Window::WindowMouseButtonCallback(GLFWwindow* nativeWindow, int button, int action, int mods)
+	{
+		Window* window = (Window*)glfwGetWindowUserPointer(nativeWindow);
+		if (window->m_mouseButtonHandleFunc)
+		{
+			KeyState keyState;
+			switch (action)
+			{
+				case GLFW_PRESS: keyState = KeyState::Pressed; break;
+				case GLFW_RELEASE: keyState = KeyState::Released; break;
+				default: return;
+			}
+			window->m_mouseButtonHandleFunc(keyState, button);
+		}
+	}
+
 	void Window::Create(int width, int height)
 	{
 		m_window = glfwCreateWindow(width, height, "Window title", NULL, NULL);
@@ -40,6 +56,7 @@ namespace engine
 		glfwSetWindowCloseCallback(m_window, WindowCloseCallback);
 		glfwSetKeyCallback(m_window, WindowKeyboardCallback);
 		glfwSetCursorPosCallback(m_window, WindowMouseMoveCallback);
+		glfwSetMouseButtonCallback(m_window, WindowMouseButtonCallback);
 	}
 
 	void Window::Update()

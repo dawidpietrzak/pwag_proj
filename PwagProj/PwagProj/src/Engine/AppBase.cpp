@@ -64,6 +64,7 @@ namespace engine
 		m_window.Create(appSpec.WindowWidth, appSpec.WindowHeight);
 		m_window.SetOnCloseHandler([&]() { m_running = false; });
 		m_window.SetOnKeyboardHandler([this](KeyState keyState, int key) { OnKeyboard(keyState, key); });
+		m_window.SetOnMouseButtonHandler([this](KeyState keyState, int button) { OnMouseButton(keyState, button); });
 		m_window.SetOnMouseMoveHandler([this](int posX, int posY) { OnMouseMove(posX, posY); });
 		glewInit();
 		glEnable(GL_DEPTH_TEST);
@@ -111,6 +112,28 @@ namespace engine
 		}
 
 		m_currentScene->OnKeyboard(keyState, key);
+	}
+
+	void AppBase::OnMouseButton(KeyState keyState, int button)
+	{
+		if (keyState == KeyState::Pressed)
+		{
+			if (button == GLFW_MOUSE_BUTTON_LEFT)
+				m_leftMouseButtonPressed = true;
+
+			else if (button == GLFW_MOUSE_BUTTON_RIGHT)
+				m_rightMouseButtonPressed = true;
+		}
+		else if (keyState == KeyState::Released)
+		{
+			if (button == GLFW_MOUSE_BUTTON_LEFT)
+				m_leftMouseButtonPressed = false;
+
+			else if (button == GLFW_MOUSE_BUTTON_RIGHT)
+				m_rightMouseButtonPressed = false;
+		}
+
+		m_currentScene->OnMouseButton(keyState, button);
 	}
 
 	void AppBase::OnMouseMove(int posX, int posY)
