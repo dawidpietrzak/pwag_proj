@@ -18,8 +18,8 @@ public:
 	ForestGenerator();
 	void init(const std::string& baseMeshPath, engine::Material& treeMaterial);
 	void populateForest(int treeCount);
-	void generate(int iterations, std::shared_ptr<ILSystemGrammar> lSystemGrammar, bool forceRecalculation = false);
-	inline void SetDistributionStrategy(std::shared_ptr<IDistributionStrategy> strategy) { m_distributionStrategy = strategy; };
+	void generate(int iterations, const std::shared_ptr<ILSystemGrammar>& lSystemGrammar, bool forceRecalculation = false);
+	inline void SetDistributionStrategy(const std::shared_ptr<IDistributionStrategy>& strategy) { m_distributionStrategy = strategy; };
 	void setTime(float time, float timeForSingleGeneration, int maxGenerations);
 	void drawTrees();
 

@@ -23,7 +23,7 @@ void ForestGenerator::populateForest(int treeCount)
 	auto positions = m_distributionStrategy->GetPositions(treeCount);
 
 	m_treeEntities.clear();
-	for (int i{ 0 }; i < treeCount; i++) {
+	for (int i = 0; i < treeCount; i++) {
 		std::shared_ptr<Plant> plant_ptr = std::make_shared<Plant>();
 		plant_ptr->entity = std::make_shared<engine::Entity>();
 		m_treeEntities.push_back(plant_ptr);
@@ -31,7 +31,7 @@ void ForestGenerator::populateForest(int treeCount)
 	}
 }
 
-void ForestGenerator::generate(int iterations, std::shared_ptr<ILSystemGrammar> lSystemGrammarTemplate, bool forceRecalculation) {
+void ForestGenerator::generate(int iterations, const std::shared_ptr<ILSystemGrammar>& lSystemGrammarTemplate, bool forceRecalculation) {
 	for (auto& plantEntity : m_treeEntities) {
 		// Only generate for plants with empty generationStrings
 		if (!plantEntity->generationStrings.empty() && !forceRecalculation)
@@ -59,7 +59,7 @@ void ForestGenerator::generate(int iterations, std::shared_ptr<ILSystemGrammar> 
 //	return -2*dx/pow(T, 3)*pow(t, 3) + 3 * dx / pow(T, 2) * pow(t, 2) + xmin;
 //}
 
-float exampleGrowthFunction(const float& t, const float& timeForSingleGeneration, const int& maxGenerations) {
+static float exampleGrowthFunction(float t, float timeForSingleGeneration, int maxGenerations) {
 	float T = timeForSingleGeneration * maxGenerations;
 	return 1 - std::pow(1 - t / T, 8);
 }
@@ -84,7 +84,7 @@ void ForestGenerator::setTime(float time, float timeForSingleGeneration, int max
 }
 
 void ForestGenerator::drawTrees() {
-	for (auto plantEntity : m_treeEntities)
+	for (const auto& plantEntity : m_treeEntities)
 		if (plantEntity->entity->IsCreated())
 		{
 			engine::Renderer::Draw(plantEntity->entity);

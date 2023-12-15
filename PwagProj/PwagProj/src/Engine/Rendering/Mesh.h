@@ -9,6 +9,7 @@ namespace engine
 	class Mesh
 	{
 	public:
+		void Create(VertexBuffer vertexBuffer);
 		void Create(VertexBuffer vertexBuffer, IndexBuffer indexBuffer);
 		void Create(const std::vector<VertexBuffer>& vertexBuffers, IndexBuffer indexBuffer);
 		void CreateInstanced(const std::vector<VertexBuffer>& vertexBuffers, IndexBuffer indexBuffer, GLuint instancesNumber);

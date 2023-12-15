@@ -19,6 +19,6 @@ private:
 
 private:
 	void LoadResources();
-
+	void CreateSkyboxMesh();
 };
 

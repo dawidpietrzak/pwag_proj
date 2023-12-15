@@ -44,10 +44,14 @@ void MainScene::OnStart()
 	auto defaultMaterial = assetManager->GetMaterial("default_mat");
 	m_cubeEntity.Create(cubeMesh, defaultMaterial);
 	m_cubeEntity.SetPosition({ 0, 2, 0 });
+
+	auto skyboxMesh = assetManager->GetMesh("skybox");
+	auto skyboxMaterial = assetManager->GetMaterial("skybox_mat");
+	m_skyboxEntity.Create(skyboxMesh, skyboxMaterial);
 	
 	rules.push_back(Rule{ "F", "(F(+F)[>+F])" });
 
-	m_forestGenerator.init("assets/cylinderTransformBottom.obj", m_plantMaterial);
+	m_forestGenerator.init("assets/log.obj", m_plantMaterial);
 	glm::vec2 area = glm::vec2(20, 20);
 	int16_t gridSubdivision = 10;
 	std::shared_ptr<IDistributionStrategy> gridDistribution = std::make_shared<GridRandomDistributionStrategy>(area, gridSubdivision);
@@ -288,6 +292,7 @@ void MainScene::OnUpdate(float deltaTime)
 
 	engine::Renderer::Begin(m_camera);
 	engine::Renderer::SetLightPosition({ 15 * cosf(m_timer * 0.5f), 20, 15 * sinf(m_timer * 0.5f) });
+	engine::Renderer::DrawSkybox(m_skyboxEntity);
 	engine::Renderer::Draw(m_terrain);
 	engine::Renderer::Draw(m_cubeEntity);
 

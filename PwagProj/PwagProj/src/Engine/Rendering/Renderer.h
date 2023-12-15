@@ -19,6 +19,8 @@ namespace engine
 
 		static void SetLightPosition(const glm::vec3& position);
 
+		static void DrawSkybox(const Entity& entity);
+
 		static void Draw(const Entity& entity);
 		static void Draw(const std::unique_ptr<Entity>& entity);
 		static void Draw(const std::shared_ptr<Entity>& entity);
@@ -28,6 +30,7 @@ namespace engine
 		static Framebuffer& GetFramebuffer() { return s_framebuffer; }
 
 	private:
+		static Entity* s_skyboxEntity;
 		static std::vector<Entity*> s_entitiesToDraw;
 		static std::shared_ptr<Camera> s_camera;
 

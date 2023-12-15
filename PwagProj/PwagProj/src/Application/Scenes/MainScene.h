@@ -30,6 +30,7 @@ private:
 	engine::Material m_plantMaterial;
 	
 	engine::Entity m_cubeEntity;
+	engine::Entity m_skyboxEntity;
 
 	ForestGenerator m_forestGenerator;
 

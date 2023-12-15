@@ -2,6 +2,12 @@
 
 namespace engine
 {
+	void Mesh::Create(VertexBuffer vertexBuffer)
+	{
+		m_vertexBuffers = { vertexBuffer };
+		m_indexBuffer = {};
+	}
+
 	void Mesh::Create(VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
 	{
 		m_vertexBuffers = { vertexBuffer };
@@ -24,7 +30,9 @@ namespace engine
 	{
 		for (const auto& vertexBuffer : m_vertexBuffers)
 			vertexBuffer.Bind();
-		m_indexBuffer.Bind();
+
+		if (m_indexBuffer.GetIndicesCount() > 0)
+			m_indexBuffer.Bind();
 	}
 
 	void Mesh::Unbind() const
@@ -38,6 +46,8 @@ namespace engine
 	{
 		for (auto& vertexBuffer : m_vertexBuffers)
 			vertexBuffer.Destroy();
-		m_indexBuffer.Destroy();
+		
+		if (m_indexBuffer.GetIndicesCount() > 0)
+			m_indexBuffer.Destroy();
 	}
 }

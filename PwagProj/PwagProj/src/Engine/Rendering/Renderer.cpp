@@ -7,6 +7,7 @@ namespace engine
 {
 	std::shared_ptr<Camera> Renderer::s_camera;
 	std::vector<Entity*> Renderer::s_entitiesToDraw;
+	Entity* Renderer::s_skyboxEntity = nullptr;
 	Framebuffer Renderer::s_framebuffer;
 	glm::mat4 Renderer::s_lightProjectionMatrix;
 	glm::mat4 Renderer::s_lightViewMatrix;
@@ -34,6 +35,11 @@ namespace engine
 	{
 		s_lightPosition = position;
 		s_lightViewMatrix = glm::lookAt(s_lightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	}
+
+	void Renderer::DrawSkybox(const Entity& entity)
+	{
+		s_skyboxEntity = (Entity*)&entity;
 	}
 
 	void Renderer::Draw(const Entity& entity)
@@ -120,6 +126,24 @@ namespace engine
 			{
 				glDrawElements(GL_TRIANGLES, mesh.GetIndicesCount(), GL_UNSIGNED_INT, 0);
 			}
+		}
+
+		if (s_skyboxEntity)
+		{
+			glDepthMask(GL_FALSE);
+			glDepthFunc(GL_LEQUAL);
+
+			s_skyboxEntity->Bind();
+
+			Material& material = s_skyboxEntity->GetMaterial();
+			material.SetProjectionMatrix(s_camera->GetProjectionMatrix());
+			glm::mat4 view = glm::mat4(glm::mat3(s_camera->GetViewMatrix()));
+			material.SetViewMatrix(view);
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			glDepthFunc(GL_LESS);
+			glDepthMask(GL_TRUE);
 		}
 	}
 }

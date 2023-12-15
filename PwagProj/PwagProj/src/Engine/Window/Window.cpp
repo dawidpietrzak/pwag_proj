@@ -51,6 +51,7 @@ namespace engine
 	void Window::Create(int width, int height)
 	{
 		m_window = glfwCreateWindow(width, height, "Window title", NULL, NULL);
+		glfwWindowHint(GLFW_SAMPLES, 4);
 		glfwMakeContextCurrent(m_window);
 		glfwSetWindowUserPointer(m_window, this);
 		glfwSetWindowCloseCallback(m_window, WindowCloseCallback);
