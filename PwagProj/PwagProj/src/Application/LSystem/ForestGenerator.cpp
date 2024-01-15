@@ -34,18 +34,18 @@ void ForestGenerator::populateForest(int treeCount)
 void ForestGenerator::generate(int iterations, const std::shared_ptr<ILSystemGrammar>& lSystemGrammarTemplate, bool forceRecalculation) {
 	for (auto& plantEntity : m_treeEntities) {
 		// Only generate for plants with empty generationStrings
-		if (!plantEntity->generationStrings.empty() && !forceRecalculation)
+		if (!plantEntity->generationSentence.empty() && !forceRecalculation)
 			continue;
 
 		if (plantEntity->entity->IsCreated())
 			plantEntity->entity->DestroyMesh();
 
-		plantEntity->generationStrings.clear(); // Clear existing strings
+		plantEntity->generationSentence.clear(); // Clear existing strings
 		std::shared_ptr<ILSystemGrammar> grammarInstance = lSystemGrammarTemplate->clone();
-		for (int i = 0; i <= iterations; ++i) {
-			grammarInstance->generate(i == 0 ? 0 : 1);
-			plantEntity->generationStrings.push_back(grammarInstance->getCurrentString());
-		}
+		grammarInstance->generate(iterations);
+		plantEntity->generationSentence = grammarInstance->getCurrentSymbols();
+
+
 	}
 }
 
@@ -61,23 +61,27 @@ void ForestGenerator::generate(int iterations, const std::shared_ptr<ILSystemGra
 
 static float exampleGrowthFunction(float t, float timeForSingleGeneration, int maxGenerations) {
 	float T = timeForSingleGeneration * maxGenerations;
-	return 1 - std::pow(1 - t / T, 8);
+	return 1 - std::pow(1 - t / T, 2);
 }
 
 void ForestGenerator::setTime(float time, float timeForSingleGeneration, int maxGenerations)
 {
 	for (auto& plantEntity : m_treeEntities) {
-		if (plantEntity->generationStrings.empty())
+		if (plantEntity->generationSentence.empty())
+		{
+			std::cerr << "Generation string is empty" << std::endl;
 			continue;
-
+		}
 		if (plantEntity->entity->IsCreated())
 			plantEntity->entity->DestroyMesh();
 
-		//std::string lSystemOutput = plantEntity->generationStrings[(int)std::round(time / timeForSingleGeneration)];
-		std::string lSystemOutput = plantEntity->generationStrings[maxGenerations];
+		std::vector<Symbol> lSystemOutput = plantEntity->generationSentence;
 		// Use the L-system output to create plant segments
 		float growFactor = exampleGrowthFunction(time, timeForSingleGeneration, maxGenerations);
-		auto plantSegments = PlantFactory::CreatePlant(lSystemOutput, growFactor, segmentLength, angle, bottomScale, topScale);
+		auto plantSegments = PlantFactory::CreatePlant(lSystemOutput, growFactor, segmentLength, angle, bottomScale, topScale, time, timeForSingleGeneration, maxGenerations);
+		if (plantSegments.size() == 0)
+			continue;
+
 		auto plantMesh = m_treeMeshGenerator.GenerateMesh(plantSegments);
 		plantEntity->entity->Create(plantMesh, m_treeMaterial);
 	}

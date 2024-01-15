@@ -18,6 +18,7 @@ struct PlantSegment
 class PlantFactory
 {
 public:
-    static std::vector<PlantSegment> CreatePlant(const std::string& grammarString, float growthFactor, float segmentLength, float angle, float bottomScale, float topScale);
+    static std::vector<PlantSegment> CreatePlant(const std::string& grammarString, float growthFactor, float segmentLength, float angle, float bottomScale, float topScale, float time, int maxGenerations);
+    static std::vector<PlantSegment> CreatePlant(const std::vector<Symbol>& grammarSentence, float growthFactor, float segmentLength, float angle, float bottomScale, float topScale, float time, float timeForSingleGeneration, int maxGenerations);
 };
 

@@ -191,7 +191,6 @@
     <ClCompile Include="src\Engine\Rendering\OpenGL\VertexBuffer.cpp" />
     <ClCompile Include="src\Engine\Rendering\OpenGL\VertexArray.cpp" />
     <ClCompile Include="src\Engine\Rendering\OpenGL\Texture.cpp" />
-    <ClCompile Include="src\Application\LSystem\Grammar\TextLSystemGrammar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application\LSystem\Distribution\DistributionStrategy.h" />
@@ -234,7 +233,6 @@
     <ClInclude Include="src\Engine\Rendering\OpenGL\VertexBuffer.h" />
     <ClInclude Include="src\Engine\Rendering\OpenGL\VertexArray.h" />
     <ClInclude Include="src\Engine\Rendering\OpenGL\Texture.h" />
-    <ClInclude Include="src\Application\LSystem\Grammar\TextLSystemGrammar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

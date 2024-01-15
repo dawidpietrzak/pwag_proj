@@ -135,9 +135,6 @@
     <ClCompile Include="src\Application\LSystem\Distribution\DistributionStrategy.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application\LSystem\Grammar\TextLSystemGrammar.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\AppBase.h">
@@ -258,9 +255,6 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="src\Application\LSystem\Distribution\DistributionStrategy.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Application\LSystem\Grammar\TextLSystemGrammar.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

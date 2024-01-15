@@ -14,7 +14,6 @@
 #include <vector>
 #include <string>
 #include <Application/LSystem/Grammar/ProbabilisticLSystemGrammar.h>
-#include <Application/LSystem/Grammar/TextLSystemGrammar.h>
 
 
 
@@ -42,14 +41,14 @@ void MainScene::OnStart()
 	auto cubeMesh = assetManager->GetMesh("cube");
 	
 	auto defaultMaterial = assetManager->GetMaterial("default_mat");
-	m_cubeEntity.Create(cubeMesh, defaultMaterial);
-	m_cubeEntity.SetPosition({ 0, 2, 0 });
+	//m_cubeEntity.Create(cubeMesh, defaultMaterial);
+	//m_cubeEntity.SetPosition({ 0, 2, 0 });
 
 	auto skyboxMesh = assetManager->GetMesh("skybox");
 	auto skyboxMaterial = assetManager->GetMaterial("skybox_mat");
 	m_skyboxEntity.Create(skyboxMesh, skyboxMaterial);
 	
-	rules.push_back(Rule{ "F", "(F(+F)[>+F])" });
+	rules.push_back(Rule{ "X", "+F>[[<X]<<^X]<&F[<+FX]>>X" });
 
 	m_forestGenerator.init("assets/log.obj", m_plantMaterial);
 	glm::vec2 area = glm::vec2(20, 20);
@@ -57,7 +56,7 @@ void MainScene::OnStart()
 	std::shared_ptr<IDistributionStrategy> gridDistribution = std::make_shared<GridRandomDistributionStrategy>(area, gridSubdivision);
 	gridDistribution->RecalculatePositions();
 	m_forestGenerator.SetDistributionStrategy(gridDistribution);
-	m_forestGenerator.populateForest(5);
+	m_forestGenerator.populateForest(1);
 
 }
 
@@ -78,16 +77,16 @@ void MainScene::OnLSystemUIUpdate()
 
 	ImGui::Text("Lsystem");
 	ImGui::Separator();
-	static std::string initialAxiom = "F";
+	static std::string initialAxiom = "X";
 	static int maxGenerations = 2; // Number of maxGenerations to generate
-	static int treeCount = 5;
+	static int treeCount = 1;
 	static int lSystemType = 0; // 0 for Simple, 1 for Probabilistic
 	static const char* lSystemTypes[] = { "Simple L-System", "Probabilistic L-System"}; //, "FromText[unimplemented]" 
 	static float framesPerGeneration = 100;
 	static int time = 0;
 
 	static int plantDistributionType = 0;
-	static const char* plantDistributionTypes[] = { "RandomGrid", "TerrainBasedRandomGrid[unimplemented]" };
+	static const char* plantDistributionTypes[] = { "RandomGrid"};
 
 	// Buffer for input text
 	static char textGrammarInputBuffer[1024] = "";
@@ -100,9 +99,6 @@ void MainScene::OnLSystemUIUpdate()
 		else if (lSystemType == 1) {
 			m_lSystemGrammar = std::make_shared<ProbabilisticLSystemGrammar>();
 		}
-		else if (lSystemType == 2) {
-			m_lSystemGrammar = std::make_shared<TextLSystemGrammar>();
-		}
 
 		m_lSystemGrammar->setCurrentString(initialAxiom);
 		for (const auto& rule : rules) {
@@ -114,15 +110,6 @@ void MainScene::OnLSystemUIUpdate()
 				if (probabilisticLSystemGrammar)
 					probabilisticLSystemGrammar->addRule(rule.symbol.c_str()[0], rule.replacement, rule.probability);
 			}
-			else if (lSystemType == 2) {
-				std::shared_ptr<TextLSystemGrammar> textLSystemGrammar = std::dynamic_pointer_cast<TextLSystemGrammar>(m_lSystemGrammar);
-				if (textLSystemGrammar) {
-					std::string inputText(textGrammarInputBuffer); // Convert to std::string
-					textLSystemGrammar->parseText(inputText); // Process the text
-				}
-					
-			}
-
 		}
 
 		m_forestGenerator.generate(maxGenerations, m_lSystemGrammar, forceRecalculation);
@@ -153,7 +140,7 @@ void MainScene::OnLSystemUIUpdate()
 	ImGui::Spacing();
 
 	static int plantTemplate = 0;
-	static const char* plantTemplateTypes[] = { "Custom", "Plant1"};
+	static const char* plantTemplateTypes[] = { "Custom", "Plant1Simple", "Plant1Probabilistic" };
 
 	
 	
@@ -169,17 +156,29 @@ void MainScene::OnLSystemUIUpdate()
 		if (plantTemplate == 1) {
 			rules.clear();
 
-			lSystemType = 1;
-			m_forestGenerator.segmentLength = 0.5f;
+			lSystemType = 0;
+			m_forestGenerator.segmentLength = 1.0f;
 			m_forestGenerator.angle = 33;
-			m_forestGenerator.topScale = 0.075;
-			m_forestGenerator.bottomScale = 0.1f;
+			m_forestGenerator.topScale = 0.16;
+			m_forestGenerator.bottomScale = 0.2f;
 
+			initialAxiom = "X";
+			rules.push_back(Rule{ "X", "F>[[X]<^X]<&F[<^FX]>X"});
 
-			rules.push_back(Rule{ "F", "(F[&++F]F[^--F])", 0.30 });
-			rules.push_back(Rule{ "F", "(F[&+>F])", 0.30 });
-			rules.push_back(Rule{ "F", "(F[^-F])", 0.30});
-			rules.push_back(Rule{ "F", "F(F)", 0.10 });
+			RegenerateForest(true);
+		}
+		else if (plantTemplate == 2) {
+			rules.clear();
+
+			lSystemType = 1;
+			m_forestGenerator.segmentLength = 1.0f;
+			m_forestGenerator.angle = 33;
+			m_forestGenerator.topScale = 0.16;
+			m_forestGenerator.bottomScale = 0.2f;
+
+			initialAxiom = "X";
+			rules.push_back(Rule{ "X", "F>[[X]<^X]<&F[<^FX]>X", 0.5f });
+			rules.push_back(Rule{ "X", "F<[[X]>&X]>^F[>&FX]<X", 0.5f });
 
 			RegenerateForest(true);
 		}

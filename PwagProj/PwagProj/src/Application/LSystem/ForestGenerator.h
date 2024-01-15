@@ -9,7 +9,7 @@
 
 struct Plant {
 	std::shared_ptr<engine::Entity> entity;
-	std::vector<std::string> generationStrings;
+	std::vector<Symbol> generationSentence;
 };
 
 class ForestGenerator
